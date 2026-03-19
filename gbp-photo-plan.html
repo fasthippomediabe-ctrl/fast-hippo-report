@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GBP Photo Upload Plan — Fast Hippo Media</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: #f0f2f5; color: #1a1a2e; line-height: 1.6; }
+.container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+.header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); color: white; border-radius: 16px; padding: 40px; margin-bottom: 24px; }
+.header h1 { font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+.header .subtitle { font-size: 14px; color: #94a3b8; }
+.header .date { font-size: 12px; color: #64748b; margin-top: 8px; }
+.card { background: white; border-radius: 12px; padding: 28px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.card h2 { font-size: 19px; font-weight: 700; margin-bottom: 16px; color: #1a1a2e; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+.card h3 { font-size: 15px; font-weight: 700; margin: 18px 0 10px; color: #0f3460; }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13.5px; }
+th { background: #f8fafc; text-align: left; padding: 10px 14px; font-weight: 600; border-bottom: 2px solid #e2e8f0; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+tr:hover td { background: #fafbfc; }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin: 2px; }
+.tag-green { background: #dcfce7; color: #166534; }
+.tag-blue { background: #dbeafe; color: #1e40af; }
+.tag-yellow { background: #fef3c7; color: #92400e; }
+.tag-red { background: #fee2e2; color: #991b1b; }
+.tag-purple { background: #f3e8ff; color: #6b21a8; }
+.insight { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; }
+.insight strong { color: #1e40af; }
+.warning { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; }
+.count-badge { display: inline-block; background: #1e293b; color: white; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin: 14px 0; }
+.col-card { border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; }
+.col-card .name { font-weight: 700; font-size: 14px; margin-bottom: 8px; }
+.col-card .detail { font-size: 13px; color: #475569; margin-bottom: 4px; }
+.priority-item { display: flex; gap: 14px; margin: 14px 0; align-items: flex-start; }
+.priority-num { width: 32px; height: 32px; border-radius: 50%; background: #0f3460; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+.priority-content { flex: 1; }
+.priority-content .action { font-weight: 600; color: #1a1a2e; }
+.freq-bar { display: flex; align-items: center; margin: 6px 0; }
+.freq-label { width: 140px; font-size: 13px; font-weight: 500; }
+.freq-track { flex: 1; height: 24px; background: #f1f5f9; border-radius: 4px; }
+.freq-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: 11px; font-weight: 600; color: white; }
+.calendar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }
+.week-block { border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; }
+.week-block h4 { font-size: 13px; font-weight: 700; color: #0f3460; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+.photo-item { font-size: 12.5px; padding: 6px 0; border-bottom: 1px solid #f1f5f9; }
+.photo-item:last-child { border-bottom: none; }
+.photo-type-tag { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; margin-right: 4px; }
+.ptag-ext { background: #dbeafe; color: #1e40af; }
+.ptag-int { background: #fef3c7; color: #92400e; }
+.ptag-team { background: #dcfce7; color: #166534; }
+.ptag-work { background: #f3e8ff; color: #6b21a8; }
+.ptag-brand { background: #ffe4e6; color: #9f1239; }
+.ptag-video { background: #cffafe; color: #155e75; }
+@media (max-width: 768px) { .three-col { grid-template-columns: 1fr; } .calendar-grid { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <h1>GBP Photo Upload Plan for Fast Hippo Media</h1>
+  <div class="subtitle">Based on observed competitor photo profiles — Osky Blue, Seota, Kinetic Curve</div>
+  <div class="date">Data collected March 17, 2026 from live Google Business Profiles via Google Maps and Google Places</div>
+</div>
+
+<!-- SECTION 1: Competitor Photo Intelligence -->
+<div class="card">
+  <h2>1. Competitor Photo Profiles — What We Observed</h2>
+
+  <div class="three-col">
+    <div class="col-card">
+      <div class="name">Osky Blue <span class="tag tag-blue">Rank #1</span></div>
+      <div class="detail"><strong>Total photos:</strong> ~5-8 (fewest of all three)</div>
+      <div class="detail"><strong>Owner-uploaded:</strong> 1 photo confirmed</div>
+      <div class="detail"><strong>Photo categories:</strong> All, Inside, By owner, Street View &amp; 360°</div>
+      <div class="detail"><strong>Recency:</strong> Most recent owner photo: 5 years ago</div>
+      <div class="detail"><strong>Photo types observed:</strong></div>
+      <div class="detail">• Building exterior (Paycor Dallas complex) — professional architectural photography by Christopher Munn</div>
+      <div class="detail">• Office interior / conference room</div>
+      <div class="detail">• 1 video (building/campus tour)</div>
+      <div class="detail"><strong>Geo-relevance:</strong> High — Frisco business park is recognizable</div>
+      <div class="detail"><strong>Portfolio/work samples:</strong> None observed</div>
+    </div>
+
+    <div class="col-card" style="border-color: #22c55e; background: #f0fdf4;">
+      <div class="name">Seota <span class="tag tag-yellow">Rank #6</span></div>
+      <div class="detail"><strong>Total photos:</strong> <span class="count-badge">71+</span> (most by far)</div>
+      <div class="detail"><strong>Owner-uploaded:</strong> Significant volume</div>
+      <div class="detail"><strong>Photo categories:</strong> All, Street View &amp; 360°, Inside, Videos, By owner</div>
+      <div class="detail"><strong>Recency:</strong> Active uploading (multiple recent)</div>
+      <div class="detail"><strong>Photo types observed:</strong></div>
+      <div class="detail">• Building exterior (HALL Park campus — aerial angle)</div>
+      <div class="detail">• Office interiors — team at desks, workstations</div>
+      <div class="detail">• Team/people photos — staff working</div>
+      <div class="detail">• Website portfolio screenshots — client work samples</div>
+      <div class="detail">• Multiple short videos (0:23–0:45 sec each)</div>
+      <div class="detail">• 360° interior tour</div>
+      <div class="detail"><strong>Geo-relevance:</strong> High — HALL Park is a recognizable Frisco landmark</div>
+      <div class="detail"><strong>Portfolio/work samples:</strong> Yes — multiple website screenshots</div>
+    </div>
+
+    <div class="col-card">
+      <div class="name">Kinetic Curve <span class="tag tag-purple">Prosper</span></div>
+      <div class="detail"><strong>Total photos:</strong> <span class="count-badge">23+</span></div>
+      <div class="detail"><strong>Owner-uploaded:</strong> Moderate volume</div>
+      <div class="detail"><strong>Photo categories:</strong> All, By owner</div>
+      <div class="detail"><strong>Recency:</strong> Recent uploads visible</div>
+      <div class="detail"><strong>Photo types observed:</strong></div>
+      <div class="detail">• Interior coworking/office space with people</div>
+      <div class="detail">• Team consultation photos — meetings with clients</div>
+      <div class="detail">• Client event photos (branded materials visible)</div>
+      <div class="detail">• Branded social graphics and icons</div>
+      <div class="detail">• Product avatar/headshot illustrations</div>
+      <div class="detail"><strong>Geo-relevance:</strong> Moderate — office interior, Prosper location</div>
+      <div class="detail"><strong>Portfolio/work samples:</strong> Branded marketing graphics only</div>
+    </div>
+  </div>
+
+  <h3>Photo Volume Comparison</h3>
+  <div style="margin: 12px 0 20px;">
+    <div class="freq-bar">
+      <div class="freq-label">Seota (#6)</div>
+      <div class="freq-track"><div class="freq-fill" style="width: 95%; background: linear-gradient(90deg, #3b82f6, #6366f1);">71+ photos + videos</div></div>
+    </div>
+    <div class="freq-bar">
+      <div class="freq-label">Kinetic Curve</div>
+      <div class="freq-track"><div class="freq-fill" style="width: 30%; background: linear-gradient(90deg, #10b981, #22c55e);">23+ photos</div></div>
+    </div>
+    <div class="freq-bar">
+      <div class="freq-label">Osky Blue (#1)</div>
+      <div class="freq-track"><div class="freq-fill" style="width: 8%; background: linear-gradient(90deg, #f59e0b, #fb923c);">~5-8</div></div>
+    </div>
+    <div class="freq-bar">
+      <div class="freq-label" style="font-weight:700; color:#dc2626;">Fast Hippo (Target)</div>
+      <div class="freq-track"><div class="freq-fill" style="width: 50%; background: linear-gradient(90deg, #dc2626, #ef4444);">40+ photos (Year 1)</div></div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <strong>Critical Observation:</strong> Osky Blue ranks #1 with only ~5-8 photos — the fewest of any competitor analyzed. Seota has 71+ photos (including videos and 360° tours) yet ranks #6. This directly mirrors the pattern observed for GBP posts: photo volume alone does not determine rankings. However, Seota's photo richness creates a significantly more compelling GBP panel for conversion — prospective clients clicking on Seota's profile see a professional, active business. The goal for Fast Hippo isn't to out-photo Seota for ranking; it's to build a photo library that converts visitors into leads while sending freshness signals to Google.
+  </div>
+</div>
+
+<!-- SECTION 2: Photo Type Analysis -->
+<div class="card">
+  <h2>2. Photo Types Observed Across Competitors</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Photo Type</th>
+        <th>Osky Blue (#1)</th>
+        <th>Seota (#6)</th>
+        <th>Kinetic Curve</th>
+        <th>Recommended for Fast Hippo?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Building Exterior</strong><br><span style="color:#64748b; font-size:12px;">Office building, signage, street view</span></td>
+        <td><span class="tag tag-green">Yes</span> — Professional photographer, primary photo</td>
+        <td><span class="tag tag-green">Yes</span> — Aerial angle of HALL Park</td>
+        <td>Not prominent</td>
+        <td><span class="tag tag-green">Yes — Upload first</span></td>
+      </tr>
+      <tr>
+        <td><strong>Office Interior</strong><br><span style="color:#64748b; font-size:12px;">Workspace, desks, conference rooms</span></td>
+        <td><span class="tag tag-green">Yes</span> — Conference room visible</td>
+        <td><span class="tag tag-green">Yes</span> — Multiple workstation shots</td>
+        <td><span class="tag tag-green">Yes</span> — Coworking space prominent</td>
+        <td><span class="tag tag-green">Yes — High priority</span></td>
+      </tr>
+      <tr>
+        <td><strong>Team / People</strong><br><span style="color:#64748b; font-size:12px;">Staff at work, meetings, candid shots</span></td>
+        <td>Not prominent</td>
+        <td><span class="tag tag-green">Yes</span> — Team at desks</td>
+        <td><span class="tag tag-green">Yes</span> — Consultations, meetings</td>
+        <td><span class="tag tag-green">Yes — High priority</span></td>
+      </tr>
+      <tr>
+        <td><strong>Portfolio / Work Samples</strong><br><span style="color:#64748b; font-size:12px;">Website screenshots, campaign results, client deliverables</span></td>
+        <td>Not observed</td>
+        <td><span class="tag tag-green">Yes</span> — Website screenshot portfolio</td>
+        <td>Branded graphics only</td>
+        <td><span class="tag tag-green">Yes — Differentiator</span></td>
+      </tr>
+      <tr>
+        <td><strong>Short-Form Video</strong><br><span style="color:#64748b; font-size:12px;">Office tours, team intros, quick tips</span></td>
+        <td>1 video observed</td>
+        <td><span class="tag tag-green">Yes</span> — 6+ videos (0:23–0:45 sec each)</td>
+        <td>Not observed in GBP gallery</td>
+        <td><span class="tag tag-green">Yes — Seota's edge</span></td>
+      </tr>
+      <tr>
+        <td><strong>360° Interior Tour</strong><br><span style="color:#64748b; font-size:12px;">Google Street View-style walkthrough</span></td>
+        <td><span class="tag tag-green">Yes</span> — Street View &amp; 360° tab</td>
+        <td><span class="tag tag-green">Yes</span> — Street View &amp; 360° tab</td>
+        <td>Not observed</td>
+        <td><span class="tag tag-yellow">Nice-to-have</span></td>
+      </tr>
+      <tr>
+        <td><strong>Branded Graphics</strong><br><span style="color:#64748b; font-size:12px;">Logos, marketing materials, infographics</span></td>
+        <td>Not observed</td>
+        <td>Not prominent</td>
+        <td><span class="tag tag-green">Yes</span> — Social graphics, icons</td>
+        <td><span class="tag tag-yellow">Sparingly — looks like social media reposts</span></td>
+      </tr>
+      <tr>
+        <td><strong>Client Interaction</strong><br><span style="color:#64748b; font-size:12px;">Meetings with clients, presentations, handshakes</span></td>
+        <td>Not observed</td>
+        <td>Not prominent</td>
+        <td><span class="tag tag-green">Yes</span> — Consultation photos</td>
+        <td><span class="tag tag-green">Yes — Builds trust</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- SECTION 3: The Photo Upload Plan -->
+<div class="card">
+  <h2>3. Fast Hippo Media — Photo Upload Plan</h2>
+
+  <h3>Target: 40+ Photos in 12 Months (3-4 uploads per month)</h3>
+  <p style="font-size:14px; color: #475569; margin-bottom: 16px;">This puts you above Kinetic Curve's 23+ and approaching Seota's territory, while maintaining a realistic cadence. Seota didn't upload 71 photos overnight — they built up over years. Your sprint phase gets you to a competitive baseline fast.</p>
+
+  <h3>Photo Mix — What to Upload and When</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Photo Type</th>
+        <th>Priority</th>
+        <th>Quantity Target (Year 1)</th>
+        <th>Upload Timing</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="photo-type-tag ptag-ext">EXTERIOR</span> Office building / 7700 Preston Rd</td>
+        <td><strong>Week 1</strong></td>
+        <td>3-5 photos</td>
+        <td>Upload all in first week — these are your GBP cover photo candidates</td>
+      </tr>
+      <tr>
+        <td><span class="photo-type-tag ptag-int">INTERIOR</span> Office workspace / meeting rooms</td>
+        <td><strong>Week 1-2</strong></td>
+        <td>5-8 photos</td>
+        <td>Upload in first two weeks — builds the "Inside" category tab</td>
+      </tr>
+      <tr>
+        <td><span class="photo-type-tag ptag-team">TEAM</span> Staff at work / headshots</td>
+        <td><strong>Week 2-3</strong></td>
+        <td>5-8 photos</td>
+        <td>Upload after exteriors/interiors — humanizes the business</td>
+      </tr>
+      <tr>
+        <td><span class="photo-type-tag ptag-work">PORTFOLIO</span> Website screenshots / results</td>
+        <td><strong>Monthly ongoing</strong></td>
+        <td>12-15 photos (1-2/month)</td>
+        <td>Upload after each project completion — this is your unique content engine</td>
+      </tr>
+      <tr>
+        <td><span class="photo-type-tag ptag-brand">CLIENT</span> Client meetings / presentations</td>
+        <td><strong>Monthly ongoing</strong></td>
+        <td>6-8 photos</td>
+        <td>Capture at every client meeting — with permission</td>
+      </tr>
+      <tr>
+        <td><span class="photo-type-tag ptag-video">VIDEO</span> Short clips (30-60 sec)</td>
+        <td><strong>Month 2+</strong></td>
+        <td>4-6 videos</td>
+        <td>Monthly — office tour, quick tip, team intro, AEO explainer</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>First-Month Upload Calendar</h3>
+  <div class="calendar-grid">
+    <div class="week-block">
+      <h4>Week 1 — Foundation</h4>
+      <div class="photo-item"><span class="photo-type-tag ptag-ext">EXT</span> Building exterior — daytime, front entrance with address visible</div>
+      <div class="photo-item"><span class="photo-type-tag ptag-ext">EXT</span> Building exterior — evening/golden hour (like Osky Blue's approach)</div>
+      <div class="photo-item"><span class="photo-type-tag ptag-ext">EXT</span> Preston Rd signage or suite number if visible</div>
+      <div class="photo-item"><span class="photo-type-tag ptag-int">INT</span> Main workspace — wide angle showing desks, monitors, brand elements</div>
+      <div class="photo-item"><span class="photo-type-tag ptag-int">INT</span> Conference / meeting room</div>
+    </div>
+    <div class="week-block">
+      <h4>Week 2 — People</h4>
+      <div class="photo-item"><span class="photo-type-tag ptag-team">TEAM</span> Team photo — 2-4 people in office (casual, working)</div>
+      <div class="photo-item"><span class="photo-type-tag ptag-team">TEAM</span> Individual headshot — Tim (owner/founder)</div>
+      <div class="photo-item"><span class="photo-type-tag ptag-int">INT</span> Workstation close-up — screens showing analytics or website work</div>
+    </div>
+    <div class="week-block">
+      <h4>Week 3 — Work Samples</h4>
+      <div class="photo-item"><span class="photo-type-tag ptag-work">WORK</span> Client website screenshot #1 — before/after or final design</div>
+      <div class="photo-item"><span class="photo-type-tag ptag-work">WORK</span> Client website screenshot #2 — different industry/project</div>
+      <div class="photo-item"><span class="photo-type-tag ptag-brand">CLIENT</span> Photo from recent client meeting or strategy session</div>
+    </div>
+    <div class="week-block">
+      <h4>Week 4 — Differentiators</h4>
+      <div class="photo-item"><span class="photo-type-tag ptag-work">WORK</span> SEO/AEO dashboard screenshot — showing results (anonymized)</div>
+      <div class="photo-item"><span class="photo-type-tag ptag-video">VIDEO</span> 30-sec office tour video or team intro</div>
+      <div class="photo-item"><span class="photo-type-tag ptag-brand">CLIENT</span> Community event photo — Frisco Chamber, networking, etc.</div>
+    </div>
+  </div>
+
+  <p style="font-size:14px; margin-top:12px; color:#475569;"><strong>Month 1 total: ~15 uploads.</strong> This immediately surpasses Osky Blue's entire photo library and puts you above 50% of Kinetic Curve's.</p>
+</div>
+
+<!-- SECTION 4: Photo Specifications -->
+<div class="card">
+  <h2>4. Photo Specifications &amp; Best Practices (from Observed Patterns)</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:200px;">Specification</th>
+        <th>What Competitors Do</th>
+        <th>What Fast Hippo Should Do</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Image quality</strong></td>
+        <td>Osky Blue uses a professional photographer (Christopher Munn). Seota has high-quality shots. Kinetic Curve uses phone-quality candid shots.</td>
+        <td>Hire a photographer for initial exterior/interior session (2-hour shoot, ~$300-500). Use phone for ongoing candid and portfolio shots.</td>
+      </tr>
+      <tr>
+        <td><strong>Resolution</strong></td>
+        <td>Google recommends 720px minimum. All competitors meet this.</td>
+        <td>Upload at 1200px+ width minimum. JPG format, under 5MB per image.</td>
+      </tr>
+      <tr>
+        <td><strong>File naming</strong></td>
+        <td>Not directly observable, but Google uses EXIF data for geo-relevance.</td>
+        <td>Name files descriptively: "fast-hippo-media-frisco-office-exterior.jpg" — Google can read filenames.</td>
+      </tr>
+      <tr>
+        <td><strong>Geo-tagging</strong></td>
+        <td>Osky Blue and Seota photos are tied to Frisco office parks that Google Maps already knows.</td>
+        <td>Take photos at 7700 Preston Rd with location services ON. The GPS coordinates in EXIF data reinforce your Frisco address.</td>
+      </tr>
+      <tr>
+        <td><strong>Cover photo</strong></td>
+        <td>Osky Blue: Professional building exterior at dusk. Seota: Aerial building shot. Kinetic Curve: Interior with people.</td>
+        <td>Upload your best exterior shot first — Google often uses the first owner-uploaded photo as the cover. A professional exterior shot of 7700 Preston Rd is your cover photo target.</td>
+      </tr>
+      <tr>
+        <td><strong>Video format</strong></td>
+        <td>Seota uploads 23-45 second clips. Short, not polished — they're functional, not cinematic.</td>
+        <td>30-60 seconds max. MP4 format. Landscape orientation. No intro/outro needed — just straightforward office tours, quick tips, or team introductions.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- SECTION 5: Ongoing Upload Cadence -->
+<div class="card">
+  <h2>5. Ongoing Monthly Upload Cadence (After Month 1)</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Upload Slot</th>
+        <th>When</th>
+        <th>Photo Type</th>
+        <th>Source</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Upload 1</strong></td>
+        <td>1st week of month</td>
+        <td><span class="photo-type-tag ptag-work">PORTFOLIO</span> Latest client project screenshot</td>
+        <td>Capture after each project launch — website mockup, results dashboard, or before/after</td>
+      </tr>
+      <tr>
+        <td><strong>Upload 2</strong></td>
+        <td>2nd week of month</td>
+        <td><span class="photo-type-tag ptag-team">TEAM</span> or <span class="photo-type-tag ptag-brand">CLIENT</span> Candid team/client photo</td>
+        <td>Team working on project, client meeting, whiteboard session, lunch-and-learn</td>
+      </tr>
+      <tr>
+        <td><strong>Upload 3</strong></td>
+        <td>3rd week of month</td>
+        <td><span class="photo-type-tag ptag-work">PORTFOLIO</span> or <span class="photo-type-tag ptag-video">VIDEO</span> Work sample or short video</td>
+        <td>Rotate between portfolio screenshots and 30-sec video clips (AEO tip, tool demo, office scene)</td>
+      </tr>
+      <tr>
+        <td><strong>Upload 4 (optional)</strong></td>
+        <td>4th week of month</td>
+        <td>Seasonal / event / community photo</td>
+        <td>Frisco events, holiday office photo, industry conference, networking event</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="insight">
+    <strong>Why 3-4/month works:</strong> Seota's 71+ photos were built over 15+ years (~5 photos per year). Kinetic Curve's 23+ photos were built over their shorter tenure. At 3-4 photos/month, you'll reach 40+ within a year — outpacing both competitors' historical pace while building a comprehensive visual library that converts GBP visitors.
+  </div>
+</div>
+
+<!-- SECTION 6: Priority Actions -->
+<div class="card">
+  <h2>6. Implementation Priority — Start Here</h2>
+
+  <div class="priority-item">
+    <div class="priority-num">1</div>
+    <div class="priority-content">
+      <p class="action">Book a 2-hour professional photo shoot at 7700 Preston Rd this week.</p>
+      <p style="font-size:14px;">Get exterior shots at two times of day (daylight + golden hour), interior workspace shots, conference room, and individual/team headshots. Osky Blue's single professional exterior photo by Christopher Munn is their entire GBP photo identity — and they rank #1. One session gives you your foundation of 10-15 professional photos.</p>
+    </div>
+  </div>
+
+  <div class="priority-item">
+    <div class="priority-num">2</div>
+    <div class="priority-content">
+      <p class="action">Upload 5 photos in Week 1 — exteriors and interiors first.</p>
+      <p style="font-size:14px;">Google uses the first owner-uploaded photos to establish the "cover" image and populate the photo categories. Get your building exterior up first (this is what Osky Blue and Seota both lead with), followed by interiors. This immediately triggers the "Inside" category tab on your GBP.</p>
+    </div>
+  </div>
+
+  <div class="priority-item">
+    <div class="priority-num">3</div>
+    <div class="priority-content">
+      <p class="action">Start capturing portfolio screenshots from every project — now.</p>
+      <p style="font-size:14px;">Seota's photo library is heavily populated with client website screenshots. These serve double duty: (1) they demonstrate your work to prospects who browse your GBP photos, and (2) they add volume to your photo count without needing photoshoots. Every time a site launches or a campaign hits a milestone, take a clean screenshot. This is your ongoing content engine — no competitors besides Seota are doing this consistently.</p>
+    </div>
+  </div>
+
+  <div class="priority-item">
+    <div class="priority-num">4</div>
+    <div class="priority-content">
+      <p class="action">Record your first 30-second GBP video in Month 2.</p>
+      <p style="font-size:14px;">Seota is the only competitor with a dedicated "Videos" tab in their GBP. Their clips are 23-45 seconds — not polished productions. Walk through your office on your phone saying "Welcome to Fast Hippo Media in Frisco, Texas — here's where we build SEO, AEO, and digital marketing strategies for local businesses." Upload it. You'll be one of two businesses in this competitive set with video content.</p>
+    </div>
+  </div>
+
+  <div class="priority-item">
+    <div class="priority-num">5</div>
+    <div class="priority-content">
+      <p class="action">Ensure every photo is taken at your office with GPS enabled.</p>
+      <p style="font-size:14px;">Google reads EXIF GPS data from photos. When you upload a photo taken at 7700 Preston Rd, Frisco, TX, the embedded coordinates reinforce your address to Google's local algorithm. Both Osky Blue and Seota are in well-known Frisco office parks that Google Maps already geo-indexes heavily. Taking photos at your physical office with location services on is a free geo-relevance signal.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 7: Photo Content Ideas -->
+<div class="card">
+  <h2>7. Evergreen Photo Content Ideas (No Competitor Owns These)</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Photo Concept</th>
+        <th>Why It's Unique to Fast Hippo</th>
+        <th>Upload Frequency</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>AEO Strategy Board</strong> — whiteboard with AEO framework visible</td>
+        <td>No competitor mentions AEO in any photo content. This visually owns the category.</td>
+        <td>Once (keep on whiteboard for recurring photo opportunities)</td>
+      </tr>
+      <tr>
+        <td><strong>Before/After Website Redesigns</strong> — side-by-side screenshots</td>
+        <td>Seota uploads individual screenshots. Before/after composites are more compelling and no one does them.</td>
+        <td>1 per month with each project</td>
+      </tr>
+      <tr>
+        <td><strong>Client Results Dashboard</strong> — analytics showing traffic/ranking growth (anonymized)</td>
+        <td>No competitor uploads results data. This is the most powerful trust signal for conversion.</td>
+        <td>1 per month (anonymize client name, show metrics)</td>
+      </tr>
+      <tr>
+        <td><strong>Team Working on Specific Service</strong> — SEO audit, PPC setup, content creation</td>
+        <td>Shows process, not just outcomes. Kinetic Curve has consultation photos but not "behind the scenes" work.</td>
+        <td>1-2 per month</td>
+      </tr>
+      <tr>
+        <td><strong>Frisco Community Involvement</strong> — Chamber events, local business meetups</td>
+        <td>Osky Blue and Seota have no community photos. Kinetic Curve has some events. This reinforces Frisco geo-relevance.</td>
+        <td>As available (1 per quarter minimum)</td>
+      </tr>
+      <tr>
+        <td><strong>"Content Everywhere" Framework Visual</strong> — branded diagram of your methodology</td>
+        <td>Your proprietary framework as a visual asset. No competitor has methodology photos.</td>
+        <td>Once (becomes a signature image)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="warning">
+    <strong>Avoid:</strong> Don't upload generic stock photos, heavily filtered/edited images, or screenshots of social media posts as GBP photos. Kinetic Curve's branded social graphics in their GBP look repurposed and low-effort. Your photos should be authentic, taken at your office, and show real work, real people, and real results.
+  </div>
+</div>
+
+<div style="text-align: center; padding: 20px; color: #94a3b8; font-size: 12px;">
+  Fast Hippo Media — GBP Photo Upload Plan · March 17, 2026<br>
+  Based on observed photos: Osky Blue (~5-8 photos), Seota (71+ photos + videos), Kinetic Curve (23+ photos)
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GBP Posting Plan — Fast Hippo Media</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: #f0f2f5; color: #1a1a2e; line-height: 1.6; }
+.container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+
+/* Header */
+.header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); color: white; border-radius: 16px; padding: 40px; margin-bottom: 24px; }
+.header h1 { font-size: 28px; font-weight: 800; margin-bottom: 6px; }
+.header .subtitle { font-size: 15px; color: #94a3b8; }
+.header .date { font-size: 13px; color: #64748b; margin-top: 8px; }
+
+/* Section Cards */
+.card { background: white; border-radius: 12px; padding: 28px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.card h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; color: #1a1a2e; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+.card h3 { font-size: 16px; font-weight: 700; margin: 18px 0 10px; color: #0f3460; }
+
+/* Competitor Grid */
+.comp-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+.comp-card { border: 1px solid #e2e8f0; border-radius: 10px; padding: 18px; }
+.comp-card.active { border-color: #22c55e; background: #f0fdf4; }
+.comp-card.inactive { border-color: #ef4444; background: #fef2f2; }
+.comp-card.aggressive { border-color: #f59e0b; background: #fffbeb; }
+.comp-name { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+.comp-rank { font-size: 12px; color: #64748b; margin-bottom: 10px; }
+.comp-stat { font-size: 13px; margin-bottom: 4px; }
+.comp-stat strong { color: #1a1a2e; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+.badge-green { background: #dcfce7; color: #166534; }
+.badge-red { background: #fee2e2; color: #991b1b; }
+.badge-yellow { background: #fef3c7; color: #92400e; }
+
+/* Insight callouts */
+.insight { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; }
+.insight strong { color: #1e40af; }
+.warning { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; }
+.warning strong { color: #92400e; }
+
+/* Post Type Table */
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13.5px; }
+th { background: #f8fafc; text-align: left; padding: 10px 14px; font-weight: 600; border-bottom: 2px solid #e2e8f0; }
+td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+tr:hover td { background: #fafbfc; }
+
+/* Calendar */
+.calendar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }
+.week-block { border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; }
+.week-block h4 { font-size: 13px; font-weight: 700; color: #0f3460; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+.post-item { font-size: 12.5px; padding: 6px 0; border-bottom: 1px solid #f1f5f9; }
+.post-item:last-child { border-bottom: none; }
+.post-type-tag { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; margin-right: 4px; }
+.tag-case { background: #dbeafe; color: #1e40af; }
+.tag-edu { background: #fef3c7; color: #92400e; }
+.tag-offer { background: #dcfce7; color: #166534; }
+.tag-social { background: #f3e8ff; color: #6b21a8; }
+.tag-review { background: #ffe4e6; color: #9f1239; }
+.tag-aeo { background: #cffafe; color: #155e75; }
+
+/* Template boxes */
+.template { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin: 12px 0; }
+.template-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #64748b; margin-bottom: 8px; }
+.template-body { font-size: 13.5px; line-height: 1.7; white-space: pre-wrap; }
+.template-body .placeholder { background: #fef3c7; padding: 1px 4px; border-radius: 3px; font-weight: 600; }
+
+/* Frequency comparison */
+.freq-bar { display: flex; align-items: center; margin: 6px 0; }
+.freq-label { width: 140px; font-size: 13px; font-weight: 500; }
+.freq-track { flex: 1; height: 24px; background: #f1f5f9; border-radius: 4px; position: relative; }
+.freq-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: 11px; font-weight: 600; color: white; }
+.freq-fill.high { background: linear-gradient(90deg, #ef4444, #f97316); }
+.freq-fill.medium { background: linear-gradient(90deg, #3b82f6, #6366f1); }
+.freq-fill.low { background: linear-gradient(90deg, #94a3b8, #cbd5e1); color: #475569; }
+.freq-fill.target { background: linear-gradient(90deg, #22c55e, #10b981); }
+
+/* Priority steps */
+.priority-list { counter-reset: priority; }
+.priority-item { display: flex; gap: 14px; margin: 14px 0; align-items: flex-start; }
+.priority-num { width: 32px; height: 32px; border-radius: 50%; background: #0f3460; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+.priority-content { flex: 1; }
+.priority-content p { font-size: 14px; }
+.priority-content .action { font-weight: 600; color: #1a1a2e; }
+
+@media (max-width: 768px) {
+  .comp-grid { grid-template-columns: 1fr; }
+  .calendar-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- Header -->
+<div class="header">
+  <h1>GBP Posting Plan for Fast Hippo Media</h1>
+  <div class="subtitle">Based on observed competitor posting patterns from Seota, Osky Blue, and Kinetic Curve</div>
+  <div class="date">Prepared March 17, 2026 — Data collected from live Google Business Profiles</div>
+</div>
+
+<!-- SECTION 1: Competitor Post Analysis -->
+<div class="card">
+  <h2>1. Competitor GBP Posting Patterns — What We Observed</h2>
+
+  <div class="comp-grid">
+    <div class="comp-card active">
+      <div class="comp-name">Seota</div>
+      <div class="comp-rank">Map Pack Rank #6 · 48 reviews · 4.8★</div>
+      <div class="comp-stat"><strong>Frequency:</strong> 1–2 posts/month</div>
+      <div class="comp-stat"><strong>Last post:</strong> 16 hours ago</div>
+      <div class="comp-stat"><strong>Dominant type:</strong> Portfolio case studies (~70%)</div>
+      <div class="comp-stat"><strong>CTA style:</strong> "Learn more" (100%)</div>
+      <div class="comp-stat"><strong>Media:</strong> Multi-image website mockups</div>
+      <div class="comp-stat"><strong>Copy style:</strong> Long-form, results-focused</div>
+      <div class="comp-stat"><strong>Hashtags/Emojis:</strong> None</div>
+      <div style="margin-top:8px"><span class="badge badge-green">Currently Active</span></div>
+    </div>
+
+    <div class="comp-card inactive">
+      <div class="comp-name">Osky Blue</div>
+      <div class="comp-rank">Map Pack Rank #1 · 133 reviews · 5.0★</div>
+      <div class="comp-stat"><strong>Frequency:</strong> Inactive (stopped Oct 2021)</div>
+      <div class="comp-stat"><strong>Last post:</strong> October 2021</div>
+      <div class="comp-stat"><strong>Dominant type:</strong> Branded tips + community events</div>
+      <div class="comp-stat"><strong>CTA style:</strong> "Learn more"</div>
+      <div class="comp-stat"><strong>Media:</strong> Branded graphics with watermark</div>
+      <div class="comp-stat"><strong>Copy style:</strong> Short educational tips</div>
+      <div class="comp-stat"><strong>Hashtags/Emojis:</strong> Minimal</div>
+      <div style="margin-top:8px"><span class="badge badge-red">Inactive 4+ Years</span></div>
+    </div>
+
+    <div class="comp-card aggressive">
+      <div class="comp-name">Kinetic Curve</div>
+      <div class="comp-rank">Map Pack (Prosper) · 67 reviews · 5.0★</div>
+      <div class="comp-stat"><strong>Frequency:</strong> 3–5 posts/day</div>
+      <div class="comp-stat"><strong>Last post:</strong> 40 minutes ago</div>
+      <div class="comp-stat"><strong>Dominant type:</strong> Lead gen offers + testimonials</div>
+      <div class="comp-stat"><strong>CTA style:</strong> "Learn more" / "Book now!" / "Link in BIO"</div>
+      <div class="comp-stat"><strong>Media:</strong> Branded graphics, dashboards, photos</div>
+      <div class="comp-stat"><strong>Copy style:</strong> Urgency/fear-based, emoji-heavy</div>
+      <div class="comp-stat"><strong>Hashtags/Emojis:</strong> Heavy use of both</div>
+      <div style="margin-top:8px"><span class="badge badge-yellow">Hyper-Active</span></div>
+    </div>
+  </div>
+
+  <h3>Posting Frequency Comparison</h3>
+  <div style="margin: 12px 0 20px;">
+    <div class="freq-bar">
+      <div class="freq-label">Kinetic Curve</div>
+      <div class="freq-track"><div class="freq-fill high" style="width: 100%;">90–150 posts/mo</div></div>
+    </div>
+    <div class="freq-bar">
+      <div class="freq-label">Seota</div>
+      <div class="freq-track"><div class="freq-fill medium" style="width: 12%;">1–2/mo</div></div>
+    </div>
+    <div class="freq-bar">
+      <div class="freq-label">Osky Blue</div>
+      <div class="freq-track"><div class="freq-fill low" style="width: 3%;">0</div></div>
+    </div>
+    <div class="freq-bar">
+      <div class="freq-label" style="font-weight:700; color:#166534;">Fast Hippo (Target)</div>
+      <div class="freq-track"><div class="freq-fill target" style="width: 28%;">6–8/mo</div></div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <strong>Key Finding:</strong> Osky Blue ranks #1 in the Map Pack with ZERO posts in 4+ years. This proves that GBP posts alone don't determine rankings — reviews (133), category match, and address proximity matter far more. However, Seota's consistent posting correlates with maintaining relevance despite a mismatched primary category. The takeaway: posting is a supporting signal, not a primary lever. Your posting plan should be sustainable, not exhausting.
+  </div>
+
+  <div class="warning">
+    <strong>Avoid Kinetic Curve's Approach:</strong> Posting 3–5 times per day with repetitive content, aggressive hashtags (#success #money #motivation), and fear-based copy is a social media tactic, not a GBP optimization strategy. Google has stated that GBP post frequency has minimal direct ranking impact. Over-posting with recycled content risks appearing spammy and may trigger quality filters. It also doesn't align with Fast Hippo Media's premium brand positioning.
+  </div>
+</div>
+
+<!-- SECTION 2: Observed Post Types That Work -->
+<div class="card">
+  <h2>2. Post Types Observed Across Competitors</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Post Type</th>
+        <th>Used By</th>
+        <th>Observed Impact</th>
+        <th>Recommended for Fast Hippo?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Portfolio / Case Study</strong><br><span style="color:#64748b; font-size:12px;">Client project showcases with results</span></td>
+        <td>Seota (primary — ~70% of posts)</td>
+        <td>Builds credibility, demonstrates expertise, keyword-rich copy with location mentions</td>
+        <td><span class="badge badge-green">Yes — Primary post type</span></td>
+      </tr>
+      <tr>
+        <td><strong>Educational / Thought Leadership</strong><br><span style="color:#64748b; font-size:12px;">Industry insights, tips, guides</span></td>
+        <td>Seota (AI/SEO guide), Osky Blue (branding tips)</td>
+        <td>Positions brand as authority, attracts searches for informational queries</td>
+        <td><span class="badge badge-green">Yes — AEO differentiator</span></td>
+      </tr>
+      <tr>
+        <td><strong>Testimonial / Review Highlight</strong><br><span style="color:#64748b; font-size:12px;">Featured client quotes with graphics</span></td>
+        <td>Kinetic Curve (frequent)</td>
+        <td>Social proof, reinforces review signals, builds trust in GBP panel</td>
+        <td><span class="badge badge-green">Yes — Builds review culture</span></td>
+      </tr>
+      <tr>
+        <td><strong>Lead Gen Offer</strong><br><span style="color:#64748b; font-size:12px;">Free assessments, audits, consultations</span></td>
+        <td>Kinetic Curve (AI-Visibility Assessment)</td>
+        <td>Direct conversion mechanism, appears as an "Offer" post type in GBP</td>
+        <td><span class="badge badge-green">Yes — 1–2x per month</span></td>
+      </tr>
+      <tr>
+        <td><strong>Award / Trust Signal</strong><br><span style="color:#64748b; font-size:12px;">Industry recognition, milestones</span></td>
+        <td>Seota (UpCity award)</td>
+        <td>Credibility boost, differentiator in competitive market</td>
+        <td><span class="badge badge-green">Yes — When available</span></td>
+      </tr>
+      <tr>
+        <td><strong>Community / Holiday</strong><br><span style="color:#64748b; font-size:12px;">Seasonal greetings, local events</span></td>
+        <td>Seota (Thanksgiving), Osky Blue (Frisco Chamber)</td>
+        <td>Local relevance signals, humanizes brand</td>
+        <td><span class="badge badge-green">Yes — Monthly</span></td>
+      </tr>
+      <tr>
+        <td><strong>Motivational / Hustle Culture</strong><br><span style="color:#64748b; font-size:12px;">Generic business motivation graphics</span></td>
+        <td>Kinetic Curve (heavy)</td>
+        <td>Low relevance to service queries, no keyword value, dilutes expertise positioning</td>
+        <td><span class="badge badge-red">No — Off-brand</span></td>
+      </tr>
+      <tr>
+        <td><strong>Repurposed Social Posts</strong><br><span style="color:#64748b; font-size:12px;">Instagram-style posts with hashtags</span></td>
+        <td>Kinetic Curve (all posts)</td>
+        <td>Hashtags have zero SEO value in GBP. "Link in BIO" CTA doesn't work on GBP.</td>
+        <td><span class="badge badge-red">No — Platform mismatch</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- SECTION 3: The Posting Plan -->
+<div class="card">
+  <h2>3. Fast Hippo Media — GBP Posting Plan</h2>
+
+  <h3>Posting Cadence: 6–8 Posts Per Month (2 per week)</h3>
+  <p style="font-size:14px; color: #475569; margin-bottom: 16px;">This cadence outpaces Seota (1–2/mo), avoids Kinetic Curve's spam-like over-posting (90–150/mo), and is sustainable for a small agency team. Google's own guidance indicates that weekly posts keep your profile "fresh" without diminishing returns.</p>
+
+  <h3>Post Mix — Monthly Rotation</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Post Type</th>
+        <th>Frequency</th>
+        <th>GBP Post Format</th>
+        <th>Purpose</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="post-type-tag tag-case">CASE STUDY</span> Client Win / Project Showcase</td>
+        <td>2x per month</td>
+        <td>Update (with images)</td>
+        <td>Build portfolio credibility + keyword-rich descriptions with city names</td>
+      </tr>
+      <tr>
+        <td><span class="post-type-tag tag-aeo">AEO/SEO</span> Educational Thought Leadership</td>
+        <td>2x per month</td>
+        <td>Update (with branded graphic)</td>
+        <td>Position as AEO authority — the differentiator no competitor owns</td>
+      </tr>
+      <tr>
+        <td><span class="post-type-tag tag-offer">OFFER</span> Lead Gen Offer</td>
+        <td>1x per month</td>
+        <td>Offer (with CTA button)</td>
+        <td>Drive direct conversions — free audit, consultation, or assessment</td>
+      </tr>
+      <tr>
+        <td><span class="post-type-tag tag-review">REVIEW</span> Testimonial Highlight</td>
+        <td>1x per month</td>
+        <td>Update (with client photo/quote)</td>
+        <td>Amplify reviews + encourage new reviews from featured clients</td>
+      </tr>
+      <tr>
+        <td><span class="post-type-tag tag-social">LOCAL</span> Community / Seasonal</td>
+        <td>1–2x per month</td>
+        <td>Event or Update</td>
+        <td>Local relevance signals — Frisco events, holidays, DFW business community</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>4-Week Sample Calendar</h3>
+  <div class="calendar-grid">
+    <div class="week-block">
+      <h4>Week 1</h4>
+      <div class="post-item"><span class="post-type-tag tag-case">CASE</span> Client project showcase — include city name, industry, and results metric</div>
+      <div class="post-item"><span class="post-type-tag tag-aeo">AEO</span> Educational post: "Why Your Business Needs Answer Engine Optimization in 2026"</div>
+    </div>
+    <div class="week-block">
+      <h4>Week 2</h4>
+      <div class="post-item"><span class="post-type-tag tag-offer">OFFER</span> Free Digital Presence Audit for Frisco businesses — Offer post type with "Book online" CTA</div>
+      <div class="post-item"><span class="post-type-tag tag-review">REVIEW</span> Client testimonial highlight with branded graphic</div>
+    </div>
+    <div class="week-block">
+      <h4>Week 3</h4>
+      <div class="post-item"><span class="post-type-tag tag-case">CASE</span> Before/after website redesign or SEO traffic growth case study</div>
+      <div class="post-item"><span class="post-type-tag tag-aeo">AEO</span> "How AI is Changing Local Search: What Frisco Businesses Need to Know"</div>
+    </div>
+    <div class="week-block">
+      <h4>Week 4</h4>
+      <div class="post-item"><span class="post-type-tag tag-social">LOCAL</span> Community post — Frisco event, local business spotlight, or seasonal greeting</div>
+      <div class="post-item"><span class="post-type-tag tag-case">CASE</span> <em>Bonus if available:</em> New project launch or results milestone</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 4: Post Templates -->
+<div class="card">
+  <h2>4. Copy-Paste Post Templates</h2>
+  <p style="font-size: 14px; color: #475569; margin-bottom: 16px;">Each template follows the structure observed in Seota's highest-performing posts: hook → challenge → solution → result → CTA. All templates include geo-targeted keywords for Frisco/DFW relevance.</p>
+
+  <div class="template">
+    <div class="template-label">Template A — Client Case Study Post</div>
+    <div class="template-body">We just helped <span class="placeholder">[CLIENT NAME]</span>, a <span class="placeholder">[INDUSTRY]</span> in <span class="placeholder">[CITY, TX]</span>, <span class="placeholder">[ACHIEVE SPECIFIC RESULT]</span>.
+
+The challenge: <span class="placeholder">[1-SENTENCE PROBLEM DESCRIPTION]</span>
+
+What we delivered:
+— <span class="placeholder">[Service 1, e.g., Custom website redesign]</span>
+— <span class="placeholder">[Service 2, e.g., Local SEO targeting Frisco and Plano]</span>
+— <span class="placeholder">[Service 3, e.g., Google Ads campaign with conversion tracking]</span>
+
+The result: <span class="placeholder">[SPECIFIC METRIC — e.g., 140% increase in organic traffic in 90 days]</span>
+
+If your <span class="placeholder">[INDUSTRY]</span> business needs a digital marketing partner that drives real results in the DFW area, let's talk.
+
+<strong>CTA:</strong> Learn more → <span class="placeholder">[Link to case study or contact page]</span>
+<strong>Image:</strong> Multi-image: website mockup + results screenshot + client logo
+<strong>GBP Format:</strong> Update</div>
+  </div>
+
+  <div class="template">
+    <div class="template-label">Template B — AEO Educational Post</div>
+    <div class="template-body"><span class="placeholder">[HOOK QUESTION — e.g., Is your business invisible to ChatGPT and Google AI Overviews?]</span>
+
+Most <span class="placeholder">[INDUSTRY]</span> businesses in Frisco are still optimizing for traditional search only. But today, over 40% of searchers get their answers from AI — and if your business isn't structured for those answers, you're losing leads.
+
+At Fast Hippo Media, we specialize in Answer Engine Optimization (AEO) — making sure your business shows up where people are actually looking: Google AI Overviews, ChatGPT, Perplexity, and beyond.
+
+Here's one thing you can do today: <span class="placeholder">[SPECIFIC ACTIONABLE TIP]</span>
+
+Want to see where you stand? We offer a free AEO visibility check for DFW businesses.
+
+<strong>CTA:</strong> Learn more → https://fasthippomedia.com/contact/
+<strong>Image:</strong> Branded graphic with the post title as headline + Fast Hippo logo
+<strong>GBP Format:</strong> Update</div>
+  </div>
+
+  <div class="template">
+    <div class="template-label">Template C — Offer Post (Lead Gen)</div>
+    <div class="template-body"><strong>[Use the GBP "Offer" post type for this one]</strong>
+
+<strong>Offer Title:</strong> Free Digital Presence Audit for <span class="placeholder">[FRISCO / DFW / SPECIFIC CITY]</span> Businesses
+
+<strong>Offer Details:</strong>
+Not sure if your website, SEO, and online presence are working as hard as they should?
+
+We'll review your Google rankings, website performance, local SEO health, and AI visibility — then give you a clear action plan. No cost, no obligation.
+
+This offer is limited to <span class="placeholder">[5/10]</span> businesses per month.
+
+<strong>CTA Button:</strong> Book online → https://fasthippomedia.com/contact/
+<strong>Start/End Date:</strong> Set to 30-day window
+<strong>Image:</strong> Branded graphic: "Free Digital Presence Audit" with Fast Hippo logo
+<strong>GBP Format:</strong> Offer</div>
+  </div>
+
+  <div class="template">
+    <div class="template-label">Template D — Testimonial Highlight</div>
+    <div class="template-body">"<span class="placeholder">[EXACT CLIENT QUOTE FROM GOOGLE REVIEW]</span>" — <span class="placeholder">[Client Name]</span>, <span class="placeholder">[Business Name]</span>
+
+At Fast Hippo Media, we measure success by one thing: results that grow your business. Thank you, <span class="placeholder">[Client First Name]</span>, for trusting us with your digital marketing.
+
+If you're looking for a Frisco-based marketing team that treats your business like their own, we'd love to chat.
+
+<strong>CTA:</strong> Learn more → https://fasthippomedia.com/contact/
+<strong>Image:</strong> Branded quote card with client name, star rating, and Fast Hippo logo
+<strong>GBP Format:</strong> Update</div>
+  </div>
+
+  <div class="template">
+    <div class="template-label">Template E — Community / Local Post</div>
+    <div class="template-body"><span class="placeholder">[CONTEXT — e.g., Happy Small Business Saturday from the Fast Hippo team!]</span>
+
+<span class="placeholder">[1-2 SENTENCES connecting to local community — e.g., Frisco's small business community is one of the fastest-growing in Texas, and we're proud to help local businesses compete online.]</span>
+
+<span class="placeholder">[OPTIONAL: Tag a local event, partner, or initiative]</span>
+
+If you're a Frisco business owner looking to grow your digital presence in 2026, we're right here on Preston Rd — let's connect.
+
+<strong>CTA:</strong> Learn more → https://fasthippomedia.com/
+<strong>Image:</strong> Team photo, office photo, local event photo, or seasonal graphic
+<strong>GBP Format:</strong> Update (or Event if tied to a specific date/event)</div>
+  </div>
+</div>
+
+<!-- SECTION 5: Rules & Guidelines -->
+<div class="card">
+  <h2>5. Posting Rules — What to Do and What to Avoid</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:50%;">Do This (Observed in Top Performers)</th>
+        <th style="width:50%;">Avoid This (Observed in Lower Performers)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Use multi-image posts (2–4 images per post) — Seota does this on every case study</td>
+        <td>Single generic stock photos with no branding</td>
+      </tr>
+      <tr>
+        <td>Include city names naturally in copy: "Frisco," "Plano," "DFW," "North Texas"</td>
+        <td>Keyword stuffing or unnatural location mentions</td>
+      </tr>
+      <tr>
+        <td>Use "Learn more" or "Book online" as your CTA — the only CTAs that work in GBP</td>
+        <td>"Click the link in our BIO" — copied from Instagram, doesn't function in GBP</td>
+      </tr>
+      <tr>
+        <td>Write original, long-form copy (100–200 words per post, like Seota)</td>
+        <td>Short 1-sentence posts or copy-pasted social captions</td>
+      </tr>
+      <tr>
+        <td>Brand every image with Fast Hippo logo and consistent colors</td>
+        <td>Unbranded images that could belong to anyone</td>
+      </tr>
+      <tr>
+        <td>Post consistently (2x/week) — sustainability beats bursts</td>
+        <td>Posting 5 times in one day then going silent for weeks</td>
+      </tr>
+      <tr>
+        <td>Use the Offer post type for lead gen (it displays differently in GBP with dates + CTA button)</td>
+        <td>Putting all posts as "Updates" even when an offer would be more effective</td>
+      </tr>
+      <tr>
+        <td>Mention specific results: traffic numbers, ranking improvements, conversion rates</td>
+        <td>Vague claims: "We helped them grow" without any specifics</td>
+      </tr>
+      <tr>
+        <td>Keep a professional, expert tone aligned with your brand</td>
+        <td>Emoji-heavy, hashtag-loaded, motivational-quote-style posts</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- SECTION 6: Priority Actions -->
+<div class="card">
+  <h2>6. Implementation Priority — Start Here</h2>
+
+  <div class="priority-list">
+    <div class="priority-item">
+      <div class="priority-num">1</div>
+      <div class="priority-content">
+        <p class="action">Publish your first case study post this week.</p>
+        <p>Pick your best recent client project. Use Template A. Include the client's city, their industry, what you delivered, and one measurable result. Add 2–3 images (website screenshot, before/after, results chart). This single post type is what Seota builds 70% of their GBP presence around — because it works.</p>
+      </div>
+    </div>
+    <div class="priority-item">
+      <div class="priority-num">2</div>
+      <div class="priority-content">
+        <p class="action">Publish your first AEO thought leadership post.</p>
+        <p>No competitor is owning the AEO narrative in GBP posts. Seota touched on it once (Aug 2025 AI/SEO post). You should own this space entirely. Use Template B to create a post about Answer Engine Optimization — this is your unique differentiator and no one in the Frisco market is talking about it in their GBP.</p>
+      </div>
+    </div>
+    <div class="priority-item">
+      <div class="priority-num">3</div>
+      <div class="priority-content">
+        <p class="action">Create a standing Offer post (refreshed monthly).</p>
+        <p>Use the GBP Offer post type (not Update) for a "Free Digital Presence Audit" or "Free AEO Visibility Check." This displays as a special card in your GBP with a start/end date and prominent CTA button. Kinetic Curve uses lead gen offers aggressively — adopt the concept, but execute it with the quality and professionalism of your brand.</p>
+      </div>
+    </div>
+    <div class="priority-item">
+      <div class="priority-num">4</div>
+      <div class="priority-content">
+        <p class="action">Set a recurring schedule: Tuesday + Thursday posting.</p>
+        <p>Consistency signals an active, engaged business. Block 30 minutes on Tuesdays and Thursdays to draft and publish GBP posts. Rotate through the 5 post types on the calendar above. After 4 weeks, you'll have 8 posts establishing a visible, professional GBP presence that surpasses Seota's and far exceeds Osky Blue's.</p>
+      </div>
+    </div>
+    <div class="priority-item">
+      <div class="priority-num">5</div>
+      <div class="priority-content">
+        <p class="action">Create a branded image template set.</p>
+        <p>Every competitor with active posting uses consistent branded graphics. Create 5 Canva/Figma templates: (1) Case Study card, (2) AEO Insight card, (3) Offer announcement, (4) Testimonial quote card, (5) Community/seasonal card. All should use Fast Hippo colors, logo, and the same layout style. This makes posting faster and builds visual brand recognition in the GBP panel.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <strong>Remember:</strong> GBP posting is a supporting signal — not a silver bullet. The data shows that Osky Blue ranks #1 with zero posts but 133 reviews. Your biggest ranking lever is still review generation (you have 15 vs. their 133). Use these posts to reinforce your expertise and drive conversions, but continue prioritizing review acquisition as the #1 ranking lever identified in the previous analysis.
+  </div>
+</div>
+
+<!-- Footer -->
+<div style="text-align: center; padding: 20px; color: #94a3b8; font-size: 12px;">
+  Fast Hippo Media — GBP Posting Plan · Competitor data observed March 17, 2026<br>
+  Posts analyzed: Seota (8 posts, Jul 2025–Mar 2026), Osky Blue (6 posts, Oct 2021), Kinetic Curve (10+ posts, today)
+</div>
+
+</div>
+</body>
+</html>

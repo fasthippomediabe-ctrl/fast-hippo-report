@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GBP Products Spec — Fast Hippo Media (Copy-Paste Ready)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.65; }
+
+  .header {
+    background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+    color: white; padding: 40px 32px; text-align: center;
+  }
+  .header h1 { font-size: 1.7rem; font-weight: 800; }
+  .header .sub { opacity: 0.8; margin-top: 6px; font-size: 0.9rem; }
+
+  .container { max-width: 900px; margin: 0 auto; padding: 24px; }
+
+  /* Instructions box */
+  .instructions {
+    background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px;
+    padding: 20px 24px; margin-bottom: 28px;
+  }
+  .instructions h3 { font-size: 0.9rem; font-weight: 700; color: #92400e; margin-bottom: 8px; }
+  .instructions p { font-size: 0.85rem; color: #78350f; margin-bottom: 6px; }
+  .instructions .path { font-family: monospace; background: #fef3c7; padding: 2px 6px; border-radius: 4px; font-size: 0.82rem; }
+
+  /* How competitor does it */
+  .competitor-ref {
+    background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 12px;
+    padding: 20px 24px; margin-bottom: 28px;
+  }
+  .competitor-ref h3 { font-size: 0.9rem; font-weight: 700; color: #0c4a6e; margin-bottom: 10px; }
+  .competitor-ref .structure { font-size: 0.84rem; color: #164e63; }
+  .competitor-ref .cat-name { font-weight: 700; color: #0369a1; }
+
+  /* Category sections */
+  .category {
+    background: white; border-radius: 14px; margin-bottom: 24px;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.05); overflow: hidden;
+  }
+  .cat-header {
+    padding: 18px 24px; font-weight: 700; font-size: 1.05rem;
+    color: white; display: flex; align-items: center; gap: 10px;
+  }
+  .cat-header .cat-num {
+    width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem; font-weight: 800;
+  }
+  .cat-1 .cat-header { background: #1d4ed8; }
+  .cat-2 .cat-header { background: #059669; }
+  .cat-3 .cat-header { background: #d97706; }
+  .cat-4 .cat-header { background: #7c3aed; }
+  .cat-5 .cat-header { background: #dc2626; }
+  .cat-6 .cat-header { background: #0891b2; }
+
+  .cat-body { padding: 0; }
+
+  /* Product entry */
+  .product {
+    padding: 20px 24px; border-bottom: 1px solid #f1f5f9;
+  }
+  .product:last-child { border-bottom: none; }
+  .product-name {
+    font-size: 0.95rem; font-weight: 700; color: #0f172a; margin-bottom: 4px;
+  }
+  .product-category-label {
+    font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.8px; color: #94a3b8; margin-bottom: 10px;
+  }
+
+  /* Copy-paste fields */
+  .field { margin-bottom: 12px; }
+  .field-label {
+    font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; color: #64748b; margin-bottom: 4px;
+  }
+  .field-value {
+    background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;
+    padding: 12px 14px; font-size: 0.86rem; color: #334155; line-height: 1.6;
+    position: relative;
+    cursor: text;
+    white-space: pre-wrap;
+  }
+  .field-value .kw {
+    background: #dbeafe; color: #1e40af; padding: 0 3px; border-radius: 3px;
+    font-weight: 600; font-size: 0.84rem;
+  }
+  .field-value .geo {
+    background: #dcfce7; color: #166534; padding: 0 3px; border-radius: 3px;
+    font-weight: 600; font-size: 0.84rem;
+  }
+
+  .field-note {
+    font-size: 0.76rem; color: #94a3b8; margin-top: 4px; font-style: italic;
+  }
+
+  /* Price tag */
+  .price-tag {
+    display: inline-block; background: #f0fdf4; color: #15803d; font-weight: 600;
+    font-size: 0.82rem; padding: 3px 10px; border-radius: 6px; border: 1px solid #bbf7d0;
+  }
+
+  /* Image suggestion */
+  .image-note {
+    background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px;
+    padding: 10px 14px; font-size: 0.82rem; color: #991b1b; margin-top: 8px;
+  }
+  .image-note strong { font-weight: 700; }
+
+  /* Strategy note */
+  .strategy {
+    background: #f0f9ff; border-left: 4px solid #3b82f6; border-radius: 0 8px 8px 0;
+    padding: 14px 18px; margin: 16px 0; font-size: 0.84rem; color: #1e40af;
+  }
+  .strategy strong { font-weight: 700; }
+
+  .footer {
+    text-align: center; padding: 24px; font-size: 0.76rem; color: #94a3b8;
+    border-top: 1px solid #e2e8f0; margin-top: 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>GBP Products Spec for Fast Hippo Media</h1>
+  <p class="sub">Exact entries to add — copy-paste ready &mdash; modeled after #2-ranked AAA Digital Marketing Agency</p>
+</div>
+
+<div class="container">
+
+<!-- HOW-TO -->
+<div class="instructions">
+  <h3>How to Add These in Google Business Profile</h3>
+  <p><span class="path">GBP Dashboard &rarr; Edit products &rarr; + Add product</span></p>
+  <p>For each product below, you'll fill in: <strong>Product name</strong>, <strong>Category</strong> (creates a grouping header), <strong>Description</strong> (max 1,000 chars), <strong>Price</strong> (optional), and <strong>Button</strong> (link to your service page).</p>
+  <p>Upload a branded image (minimum 720&times;720px, JPG or PNG) for each product. Use real photos or branded graphics — not stock photos.</p>
+</div>
+
+<!-- WHAT AAA DIGITAL DOES -->
+<div class="competitor-ref">
+  <h3>What the #2-Ranked Competitor (AAA Digital) Does</h3>
+  <div class="structure">
+    They use <strong>4 categories</strong> with <strong>10 products total</strong>:<br><br>
+    <span class="cat-name">Social Media Management</span> &rarr; 4 products (Social Media Mgmt, Instagram Followers, Facebook Likes, Shop Creation)<br>
+    <span class="cat-name">Review Management</span> &rarr; 1 product<br>
+    <span class="cat-name">Ads Management</span> &rarr; 5 products (TikTok, Google, Instagram, YouTube, Facebook Ads)<br>
+    <span class="cat-name">Affiliate Marketing</span> &rarr; Influencer/Affiliate Marketing<br><br>
+    <strong>Your advantage:</strong> You have far more services to showcase. Below I've structured <strong>6 categories with 14 products</strong> — each one seeded with keywords Google associates with "digital marketing agency Frisco TX" and related queries.
+  </div>
+</div>
+
+<div class="strategy">
+  <strong>Keyword Strategy:</strong> Every description below intentionally includes one or more of these target phrases: <span style="background:#dbeafe;padding:1px 4px;border-radius:3px;">digital marketing agency</span>, <span style="background:#dbeafe;padding:1px 4px;border-radius:3px;">SEO</span>, <span style="background:#dbeafe;padding:1px 4px;border-radius:3px;">web design</span>, <span style="background:#dbeafe;padding:1px 4px;border-radius:3px;">PPC</span>, <span style="background:#dbeafe;padding:1px 4px;border-radius:3px;">marketing agency</span>, and geo-terms like <span style="background:#dcfce7;padding:1px 4px;border-radius:3px;">Frisco</span>, <span style="background:#dcfce7;padding:1px 4px;border-radius:3px;">Dallas</span>, <span style="background:#dcfce7;padding:1px 4px;border-radius:3px;">Texas</span>. This is deliberate — GBP product descriptions are indexed and help match your profile to searches.
+</div>
+
+<!-- ========================================= -->
+<!-- CATEGORY 1: SEO & Search Visibility -->
+<!-- ========================================= -->
+<div class="category cat-1">
+  <div class="cat-header"><span class="cat-num">1</span> SEO &amp; Search Visibility</div>
+  <div class="cat-body">
+
+    <!-- Product 1.1 -->
+    <div class="product">
+      <div class="product-name">Local SEO &amp; Google Business Profile Optimization</div>
+      <div class="product-category-label">Category: SEO &amp; Search Visibility</div>
+      <div class="field">
+        <div class="field-label">Product Name (exactly)</div>
+        <div class="field-value">Local SEO & Google Business Profile Optimization</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Description (paste this)</div>
+        <div class="field-value">Fast Hippo Media's <span class="kw">local SEO</span> service helps <span class="geo">Frisco</span>, <span class="geo">Dallas</span>, and <span class="geo">Texas</span> businesses dominate Google Maps and local search results. We optimize your <span class="kw">Google Business Profile</span>, build local citations, manage reviews, and implement geo-targeted content strategies. Our clients consistently achieve top-3 Map Pack positions for their target keywords. As a <span class="geo">Frisco</span>-based <span class="kw">digital marketing agency</span>, we understand the DFW market inside and out.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Button / CTA Link</div>
+        <div class="field-value">https://fasthippomedia.com/google-business-profile-optimization/ <em>or</em> https://fasthippomedia.com/local-seo/</div>
+      </div>
+      <div class="image-note"><strong>Image:</strong> Screenshot of a Map Pack result showing a client ranking, or a branded graphic with a Google Maps pin + "Local SEO" text overlay.</div>
+    </div>
+
+    <!-- Product 1.2 -->
+    <div class="product">
+      <div class="product-name">Organic SEO Services</div>
+      <div class="product-category-label">Category: SEO &amp; Search Visibility</div>
+      <div class="field">
+        <div class="field-label">Product Name</div>
+        <div class="field-value">Organic SEO Services</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Description</div>
+        <div class="field-value">Drive sustainable organic traffic with Fast Hippo Media's <span class="kw">organic SEO</span> services. We combine <span class="kw">technical SEO</span> audits, strategic <span class="kw">link building</span>, keyword research, and on-page optimization to improve your rankings on Google. Whether you need <span class="kw">enterprise SEO</span>, <span class="kw">ecommerce SEO</span>, or <span class="kw">Shopify SEO</span>, our <span class="geo">Frisco</span>, <span class="geo">TX</span> team delivers measurable results backed by AI-powered tools and over 60 years of combined experience.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Button / CTA Link</div>
+        <div class="field-value">https://fasthippomedia.com/organic-seo/</div>
+      </div>
+      <div class="image-note"><strong>Image:</strong> Branded graphic showing upward traffic chart or a Google Search Console screenshot (anonymized).</div>
+    </div>
+
+    <!-- Product 1.3 -->
+    <div class="product">
+      <div class="product-name">Answer Engine Optimization (AEO)</div>
+      <div class="product-category-label">Category: SEO &amp; Search Visibility</div>
+      <div class="field">
+        <div class="field-label">Product Name</div>
+        <div class="field-value">Answer Engine Optimization (AEO)</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Description</div>
+        <div class="field-value">Be the answer, not just a result. Fast Hippo Media pioneered <span class="kw">Answer Engine Optimization</span> to position your business in AI-powered search results, voice assistants, and featured snippets. Our proprietary <span class="kw">Content Everywhere</span> framework ensures your brand appears wherever customers search — Google, ChatGPT, Perplexity, Siri, and Alexa. No other <span class="kw">digital marketing agency</span> in <span class="geo">Frisco</span> or <span class="geo">Dallas</span> offers this level of AI search visibility.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Button / CTA Link</div>
+        <div class="field-value">https://fasthippomedia.com/answer-engine-optimization/ <em>or</em> https://fasthippomedia.com/content-everywhere/</div>
+      </div>
+      <div class="image-note"><strong>Image:</strong> Branded "Content Everywhere" graphic or a screenshot showing an AI answer featuring a client.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========================================= -->
+<!-- CATEGORY 2: Web Design & Development -->
+<!-- ========================================= -->
+<div class="category cat-2">
+  <div class="cat-header"><span class="cat-num">2</span> Web Design &amp; Development</div>
+  <div class="cat-body">
+
+    <!-- Product 2.1 -->
+    <div class="product">
+      <div class="product-name">Custom Website Design</div>
+      <div class="product-category-label">Category: Web Design &amp; Development</div>
+      <div class="field">
+        <div class="field-label">Product Name</div>
+        <div class="field-value">Custom Website Design</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Description</div>
+        <div class="field-value">Fast Hippo Media creates conversion-focused <span class="kw">custom websites</span> that look stunning and drive real business results. Our <span class="geo">Frisco</span>-based <span class="kw">web design</span> team builds on <span class="kw">WordPress</span>, <span class="kw">Shopify</span>, and custom platforms — each site optimized for speed, mobile responsiveness, and <span class="kw">SEO</span>. From small business sites to full <span class="kw">ecommerce web development</span>, we design websites that turn visitors into customers.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Button / CTA Link</div>
+        <div class="field-value">https://fasthippomedia.com/web-design/</div>
+      </div>
+      <div class="image-note"><strong>Image:</strong> Before/after website redesign mockup or a portfolio screenshot of a client website on desktop + mobile.</div>
+    </div>
+
+    <!-- Product 2.2 -->
+    <div class="product">
+      <div class="product-name">WordPress &amp; Shopify Development</div>
+      <div class="product-category-label">Category: Web Design &amp; Development</div>
+      <div class="field">
+        <div class="field-label">Product Name</div>
+        <div class="field-value">WordPress & Shopify Development</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Description</div>
+        <div class="field-value">Need a <span class="kw">WordPress website</span> or <span class="kw">Shopify store</span> built right? Fast Hippo Media specializes in <span class="kw">WordPress development</span>, <span class="kw">WooCommerce</span> builds, and <span class="kw">Shopify development</span> for businesses across <span class="geo">Frisco</span>, <span class="geo">Dallas</span>, and nationwide. We handle theme customization, plugin development, site migrations, and performance optimization. Google Partner certified and Amazon Advertising accredited.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Button / CTA Link</div>
+        <div class="field-value">https://fasthippomedia.com/wordpress-design/</div>
+      </div>
+      <div class="image-note"><strong>Image:</strong> WordPress + Shopify logos alongside a laptop showing a live client site.</div>
+    </div>
+
+    <!-- Product 2.3 -->
+    <div class="product">
+      <div class="product-name">Mobile App Development</div>
+      <div class="product-category-label">Category: Web Design &amp; Development</div>
+      <div class="field">
+        <div class="field-label">Product Name</div>
+        <div class="field-value">Mobile App Development</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Description</div>
+        <div class="field-value">Extend your brand to mobile with Fast Hippo Media's <span class="kw">mobile app development</span> services. We build native and cross-platform apps using <span class="kw">Flutter</span> and <span class="kw">Laravel</span>, designed to engage customers and drive revenue. From concept to App Store launch, our <span class="geo">Frisco</span>, <span class="geo">Texas</span> development team handles the full lifecycle — UI/UX design, backend development, testing, and ongoing support.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Button / CTA Link</div>
+        <div class="field-value">https://fasthippomedia.com/mobile-app-development/</div>
+      </div>
+      <div class="image-note"><strong>Image:</strong> Phone mockup showing an app your team has built, or a branded "Mobile App Development" graphic.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========================================= -->
+<!-- CATEGORY 3: PPC & Paid Advertising -->
+<!-- ========================================= -->
+<div class="category cat-3">
+  <div class="cat-header"><span class="cat-num">3</span> PPC &amp; Paid Advertising</div>
+  <div class="cat-body">
+
+    <!-- Product 3.1 -->
+    <div class="product">
+      <div class="product-name">Google Ads Management</div>
+      <div class="product-category-label">Category: PPC &amp; Paid Advertising</div>
+      <div class="field">
+        <div class="field-label">Product Name</div>
+        <div class="field-value">Google Ads Management</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Description</div>
+        <div class="field-value">Maximize your ad spend with Fast Hippo Media's <span class="kw">Google Ads</span> management. As a certified <span class="kw">Google Partner</span>, we manage <span class="kw">PPC</span> campaigns, <span class="kw">Google Local Service Ads (LSA)</span>, Shopping ads, and Display campaigns. Our <span class="geo">Frisco</span> <span class="kw">PPC</span> team optimizes bids, ad copy, and landing pages daily to lower your cost-per-lead and increase conversions for <span class="geo">Dallas</span>-area and nationwide businesses.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Button / CTA Link</div>
+        <div class="field-value">https://fasthippomedia.com/google-ads/</div>
+      </div>
+      <div class="image-note"><strong>Image:</strong> Google Partner badge or a branded graphic with the Google Ads logo + performance metrics.</div>
+    </div>
+
+    <!-- Product 3.2 -->
+    <div class="product">
+      <div class="product-name">Facebook &amp; Instagram Ads</div>
+      <div class="product-category-label">Category: PPC &amp; Paid Advertising</div>
+      <div class="field">
+        <div class="field-label">Product Name</div>
+        <div class="field-value">Facebook & Instagram Ads</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Description</div>
+        <div class="field-value">Reach your ideal customers on the platforms they use most. Fast Hippo Media creates and manages <span class="kw">Facebook Ads</span> and <span class="kw">Instagram Ads</span> campaigns — from audience targeting and creative design to A/B testing and retargeting. We help <span class="geo">Frisco</span> and <span class="geo">Dallas</span> businesses generate leads and sales with data-driven <span class="kw">social media advertising</span> strategies that deliver measurable ROI.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Button / CTA Link</div>
+        <div class="field-value">https://fasthippomedia.com/facebook-ads/</div>
+      </div>
+      <div class="image-note"><strong>Image:</strong> Branded graphic with Facebook + Instagram logos or a screenshot of ad performance dashboard.</div>
+    </div>
+
+    <!-- Product 3.3 -->
+    <div class="product">
+      <div class="product-name">Amazon &amp; Programmatic Advertising</div>
+      <div class="product-category-label">Category: PPC &amp; Paid Advertising</div>
+      <div class="field">
+        <div class="field-label">Product Name</div>
+        <div class="field-value">Amazon & Programmatic Advertising</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Description</div>
+        <div class="field-value">Go beyond search and social with Fast Hippo Media's advanced ad channels. We're <span class="kw">Amazon Advertising</span> accredited and manage Sponsored Products, Sponsored Brands, and DSP campaigns. Plus, our <span class="kw">programmatic advertising</span> services include <span class="kw">Connected TV (CTV)</span>, audio advertising, and display — reaching your customers across streaming, podcasts, and premium websites from our <span class="geo">Frisco</span>, <span class="geo">TX</span> office.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Button / CTA Link</div>
+        <div class="field-value">https://fasthippomedia.com/amazon-ads/</div>
+      </div>
+      <div class="image-note"><strong>Image:</strong> Amazon Advertising accreditation badge or a CTV/streaming graphic with your branding.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========================================= -->
+<!-- CATEGORY 4: Social Media Marketing -->
+<!-- ========================================= -->
+<div class="category cat-4">
+  <div class="cat-header"><span class="cat-num">4</span> Social Media Marketing</div>
+  <div class="cat-body">
+
+    <!-- Product 4.1 -->
+    <div class="product">
+      <div class="product-name">Social Media Management</div>
+      <div class="product-category-label">Category: Social Media Marketing</div>
+      <div class="field">
+        <div class="field-label">Product Name</div>
+        <div class="field-value">Social Media Management</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Description</div>
+        <div class="field-value">Build your brand and engage your audience with Fast Hippo Media's <span class="kw">social media management</span> services. We create, schedule, and manage content across Facebook, Instagram, LinkedIn, X (Twitter), and YouTube for businesses in <span class="geo">Frisco</span>, <span class="geo">Dallas</span>, and across the US. Our <span class="kw">social media marketing</span> team combines AI-powered content creation with hands-on community management to grow your following and drive real engagement.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Button / CTA Link</div>
+        <div class="field-value">https://fasthippomedia.com/social-media/</div>
+      </div>
+      <div class="image-note"><strong>Image:</strong> Collage of social platform icons with Fast Hippo branding, or a content calendar screenshot.</div>
+    </div>
+
+    <!-- Product 4.2 -->
+    <div class="product">
+      <div class="product-name">PR &amp; Reputation Management</div>
+      <div class="product-category-label">Category: Social Media Marketing</div>
+      <div class="field">
+        <div class="field-label">Product Name</div>
+        <div class="field-value">PR & Reputation Management</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Description</div>
+        <div class="field-value">Protect and amplify your brand's reputation with Fast Hippo Media's <span class="kw">PR agency</span> services. We manage press releases, media outreach, online <span class="kw">review management</span>, and brand monitoring for <span class="geo">Frisco</span> and <span class="geo">Dallas</span>-area businesses. From generating positive press coverage to responding strategically to reviews on Google and industry platforms, we help you build the trust that turns searchers into customers.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Button / CTA Link</div>
+        <div class="field-value">https://fasthippomedia.com/pr-agency/</div>
+      </div>
+      <div class="image-note"><strong>Image:</strong> Press mention collage or a branded "PR & Reputation" graphic.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========================================= -->
+<!-- CATEGORY 5: AI & Content Strategy -->
+<!-- ========================================= -->
+<div class="category cat-5">
+  <div class="cat-header"><span class="cat-num">5</span> AI &amp; Content Strategy</div>
+  <div class="cat-body">
+
+    <!-- Product 5.1 -->
+    <div class="product">
+      <div class="product-name">Content Everywhere&trade; Framework</div>
+      <div class="product-category-label">Category: AI &amp; Content Strategy</div>
+      <div class="field">
+        <div class="field-label">Product Name</div>
+        <div class="field-value">Content Everywhere&trade; Framework</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Description</div>
+        <div class="field-value">Fast Hippo Media's proprietary <span class="kw">Content Everywhere</span> framework is the only omnichannel <span class="kw">digital marketing</span> system that positions your business across Google, AI search engines, social platforms, video, voice assistants, and more — all from one strategy. Launched in 2025, it drove our 300%+ growth and is now available to businesses in <span class="geo">Frisco</span>, <span class="geo">Dallas</span>, and nationwide. No other <span class="kw">marketing agency</span> offers this.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Button / CTA Link</div>
+        <div class="field-value">https://fasthippomedia.com/content-everywhere/</div>
+      </div>
+      <div class="image-note"><strong>Image:</strong> Content Everywhere branded graphic or infographic showing the omnichannel distribution model.</div>
+    </div>
+
+    <!-- Product 5.2 -->
+    <div class="product">
+      <div class="product-name">AI SEO Services</div>
+      <div class="product-category-label">Category: AI &amp; Content Strategy</div>
+      <div class="field">
+        <div class="field-label">Product Name</div>
+        <div class="field-value">AI SEO Services</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Description</div>
+        <div class="field-value">Stay ahead of the AI search revolution with Fast Hippo Media's <span class="kw">AI SEO services</span>. We optimize your content for <span class="kw">AI-powered search</span> platforms like Google AI Overviews, ChatGPT, Perplexity, and voice assistants. Our <span class="geo">Frisco</span>, <span class="geo">TX</span> team combines traditional <span class="kw">search engine optimization</span> with next-generation AI visibility strategies — so your business gets found no matter how customers search.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Button / CTA Link</div>
+        <div class="field-value">https://fasthippomedia.com/ai-seo-services/</div>
+      </div>
+      <div class="image-note"><strong>Image:</strong> AI-themed branded graphic or a screenshot of a client appearing in an AI Overview.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========================================= -->
+<!-- CATEGORY 6: Industry Marketing -->
+<!-- ========================================= -->
+<div class="category cat-6">
+  <div class="cat-header"><span class="cat-num">6</span> Industry-Specific Marketing</div>
+  <div class="cat-body">
+
+    <!-- Product 6.1 -->
+    <div class="product">
+      <div class="product-name">Small Business Marketing</div>
+      <div class="product-category-label">Category: Industry-Specific Marketing</div>
+      <div class="field">
+        <div class="field-label">Product Name</div>
+        <div class="field-value">Small Business Marketing</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Description</div>
+        <div class="field-value">Fast Hippo Media helps <span class="geo">Frisco</span> and <span class="geo">Dallas</span> small businesses compete with bigger brands through affordable, results-driven <span class="kw">digital marketing</span>. We offer bundled packages that include <span class="kw">SEO</span>, <span class="kw">Google Business Profile</span> optimization, <span class="kw">social media</span>, and <span class="kw">web design</span> — tailored to small business budgets. Rated 4.9/5 by 200+ clients. Your local <span class="kw">marketing agency</span> that treats every client like our only client.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">Button / CTA Link</div>
+        <div class="field-value">https://fasthippomedia.com/small-business-marketing/</div>
+      </div>
+      <div class="image-note"><strong>Image:</strong> Photo of your team working with a client, or a branded "Small Business Marketing" graphic with your 4.9-star rating.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FINAL STRATEGY NOTE -->
+<div class="strategy" style="margin-top: 28px;">
+  <strong>Quick-Reference Checklist After Adding All Products:</strong><br><br>
+  &square; 6 categories created (SEO, Web Design, PPC, Social Media, AI & Content, Industry)<br>
+  &square; 14 products total (matches or exceeds AAA Digital's 10)<br>
+  &square; Every description includes at least one geo-term (Frisco, Dallas, Texas)<br>
+  &square; Every description includes at least one target keyword (digital marketing agency, SEO, PPC, web design)<br>
+  &square; Every product has a branded image (not stock photos)<br>
+  &square; Every product has a CTA button linking to the matching service page on fasthippomedia.com<br>
+  &square; "Content Everywhere" and "AEO" products are included — no competitor has these<br>
+  &square; Prices left blank (use "Request a quote" positioning to avoid commoditizing)
+</div>
+
+</div>
+
+<div class="footer">
+  GBP Products Spec &mdash; Prepared for Fast Hippo Media &mdash; March 17, 2026<br>
+  Modeled on AAA Digital Marketing Agency (#2 Map Pack) &mdash; tailored to Fast Hippo Media's actual service lines
+</div>
+
+</body>
+</html>

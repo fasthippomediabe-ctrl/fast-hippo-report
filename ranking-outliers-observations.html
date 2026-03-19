@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ranking Outliers &amp; Dominant Factors — Observations Only</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: #f0f2f5; color: #1a1a2e; line-height: 1.6; }
+.container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+.header { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; border-radius: 16px; padding: 36px 40px; margin-bottom: 24px; }
+.header h1 { font-size: 24px; font-weight: 800; margin-bottom: 6px; }
+.header .subtitle { font-size: 14px; color: #94a3b8; }
+.header .note { font-size: 12px; color: #64748b; margin-top: 10px; border-top: 1px solid #475569; padding-top: 10px; }
+.card { background: white; border-radius: 12px; padding: 28px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.card h2 { font-size: 18px; font-weight: 700; margin-bottom: 16px; color: #1e293b; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+.card h3 { font-size: 15px; font-weight: 700; margin: 18px 0 10px; color: #334155; }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13.5px; }
+th { background: #f8fafc; text-align: left; padding: 10px 14px; font-weight: 600; border-bottom: 2px solid #e2e8f0; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+tr:hover td { background: #fafbfc; }
+.count-badge { display: inline-block; background: #1e293b; color: white; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; }
+.rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; font-weight: 800; font-size: 13px; }
+.rank-top { background: #f97316; color: white; }
+.rank-mid { background: #e2e8f0; color: #475569; }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin: 2px; }
+.tag-match { background: #dcfce7; color: #166534; }
+.tag-partial { background: #fef3c7; color: #92400e; }
+.tag-weak { background: #fee2e2; color: #991b1b; }
+.tag-yes { background: #dbeafe; color: #1e40af; }
+.tag-no { background: #f1f5f9; color: #94a3b8; }
+.obs-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 14px 0; }
+.obs-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #64748b; margin-bottom: 6px; }
+.obs-value { font-size: 14px; font-weight: 500; }
+.outlier-card { border: 2px solid #f59e0b; border-radius: 10px; padding: 18px; margin: 12px 0; background: #fffbeb; }
+.outlier-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #92400e; margin-bottom: 6px; }
+.outlier-text { font-size: 14px; }
+.factor-bar-wrap { margin: 8px 0; }
+.factor-row { display: flex; align-items: center; margin: 6px 0; }
+.factor-name { width: 200px; font-size: 13px; font-weight: 600; }
+.factor-bar-track { flex: 1; height: 28px; background: #f1f5f9; border-radius: 4px; position: relative; overflow: hidden; }
+.factor-bar { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 10px; font-size: 11px; font-weight: 700; color: white; }
+.bar-dominant { background: linear-gradient(90deg, #dc2626, #ef4444); }
+.bar-strong { background: linear-gradient(90deg, #f97316, #fb923c); }
+.bar-moderate { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+.bar-weak { background: linear-gradient(90deg, #94a3b8, #cbd5e1); color: #475569; }
+.bar-negligible { background: linear-gradient(90deg, #e2e8f0, #f1f5f9); color: #94a3b8; }
+.matrix-cell { text-align: center; font-weight: 600; }
+.cell-high { background: #dcfce7; color: #166534; }
+.cell-med { background: #fef3c7; color: #92400e; }
+.cell-low { background: #fee2e2; color: #991b1b; }
+.cell-na { background: #f8fafc; color: #cbd5e1; }
+@media (max-width: 768px) { .factor-name { width: 140px; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <h1>Ranking Outliers &amp; Dominant Factor Observations</h1>
+  <div class="subtitle">Keyword: "digital marketing agency Frisco TX" — Local Finder / Map Pack</div>
+  <div class="note">This document contains only observations drawn from the observed dataset. No recommendations, advice, fixes, conclusions, or next steps are included. All data was observed from live Google Business Profiles, Google Maps, and Google Local Finder results on March 17, 2026.</div>
+</div>
+
+<!-- SECTION 0: Full Dataset Reference -->
+<div class="card">
+  <h2>Reference: Observed Local Finder Rankings</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:50px;">Rank</th>
+        <th>Business Name</th>
+        <th>Rating</th>
+        <th>Reviews</th>
+        <th>Tenure</th>
+        <th>Primary Category</th>
+        <th>Category Match to Query</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="rank-badge rank-top">1</span></td>
+        <td><strong>Osky Blue</strong></td>
+        <td>4.8 ★</td>
+        <td><span class="count-badge">133</span></td>
+        <td>15+ yrs</td>
+        <td>Marketing consultant</td>
+        <td><span class="tag tag-partial">Partial</span></td>
+      </tr>
+      <tr>
+        <td><span class="rank-badge rank-top">2</span></td>
+        <td><strong>AAA Digital Marketing Agency</strong></td>
+        <td>5.0 ★</td>
+        <td><span class="count-badge">46</span></td>
+        <td>3+ yrs</td>
+        <td>Marketing agency</td>
+        <td><span class="tag tag-match">Exact</span></td>
+      </tr>
+      <tr>
+        <td><span class="rank-badge rank-top">3</span></td>
+        <td><strong>A Call To Thrive</strong></td>
+        <td>4.4 ★</td>
+        <td><span class="count-badge">7</span></td>
+        <td>7+ yrs</td>
+        <td>Marketing agency</td>
+        <td><span class="tag tag-match">Exact</span></td>
+      </tr>
+      <tr>
+        <td><span class="rank-badge rank-mid">4</span></td>
+        <td><strong>Digital Marketing 1on1 SEO</strong></td>
+        <td>5.0 ★</td>
+        <td><span class="count-badge">5</span></td>
+        <td>—</td>
+        <td>—</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td><span class="rank-badge rank-mid">5</span></td>
+        <td><strong>Stax Digital Agency</strong></td>
+        <td>5.0 ★</td>
+        <td><span class="count-badge">15</span></td>
+        <td>3+ yrs</td>
+        <td>—</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td><span class="rank-badge rank-mid">6</span></td>
+        <td><strong>Seota</strong></td>
+        <td>4.8 ★</td>
+        <td><span class="count-badge">48</span></td>
+        <td>15+ yrs</td>
+        <td>Website designer</td>
+        <td><span class="tag tag-weak">Weak</span></td>
+      </tr>
+      <tr>
+        <td><span class="rank-badge rank-mid">7</span></td>
+        <td><strong>BlueMatrix Media</strong></td>
+        <td>4.4 ★</td>
+        <td><span class="count-badge">19</span></td>
+        <td>10+ yrs</td>
+        <td>—</td>
+        <td>—</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- SECTION 1: High Rank + Fewer Reviews -->
+<div class="card">
+  <h2>1. Businesses That Rank High With Fewer Reviews</h2>
+
+  <div class="outlier-card">
+    <div class="outlier-label">Outlier — A Call To Thrive (Rank #3, 7 Reviews)</div>
+    <div class="outlier-text">
+      A Call To Thrive holds position #3 with only <strong>7 Google reviews</strong> — the second-lowest review count in the entire top 7. It outranks Seota (48 reviews), BlueMatrix (19 reviews), and Stax Digital (15 reviews). Its review count is <strong>95% lower</strong> than the #1 position (Osky Blue, 133 reviews) and <strong>85% lower</strong> than the #2 position (AAA Digital, 46 reviews). Its star rating (4.4) is also the lowest among the top 3.
+    </div>
+  </div>
+
+  <div class="outlier-card">
+    <div class="outlier-label">Outlier — Digital Marketing 1on1 SEO (Rank #4, 5 Reviews)</div>
+    <div class="outlier-text">
+      Digital Marketing 1on1 SEO holds position #4 with only <strong>5 Google reviews</strong> — the lowest review count in the entire top 7. Despite having the fewest reviews by a significant margin, it outranks Seota (48 reviews, rank #6), Stax Digital (15 reviews, rank #5), and BlueMatrix (19 reviews, rank #7). It holds a perfect 5.0 rating.
+    </div>
+  </div>
+
+  <div class="outlier-card">
+    <div class="outlier-label">Outlier — AAA Digital Marketing Agency (Rank #2, 46 Reviews, 3 Years)</div>
+    <div class="outlier-text">
+      AAA Digital ranks #2 with <strong>46 reviews and only 3+ years of tenure</strong>. It outranks businesses with 15+ years tenure (Seota), 10+ years tenure (BlueMatrix), and 7+ years tenure (A Call To Thrive). Its review count is 65% lower than #1 Osky Blue, yet it holds the #2 position.
+    </div>
+  </div>
+
+  <h3>Review Count vs. Rank Position</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Business</th>
+        <th>Reviews</th>
+        <th>Expected Rank by Reviews Alone</th>
+        <th>Position Deviation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>#1</td>
+        <td>Osky Blue</td>
+        <td>133</td>
+        <td>#1</td>
+        <td>0 (matches)</td>
+      </tr>
+      <tr>
+        <td>#2</td>
+        <td>AAA Digital</td>
+        <td>46</td>
+        <td>#3</td>
+        <td>+1 position higher than review count predicts</td>
+      </tr>
+      <tr style="background:#fffbeb;">
+        <td><strong>#3</strong></td>
+        <td><strong>A Call To Thrive</strong></td>
+        <td><strong>7</strong></td>
+        <td><strong>#6</strong></td>
+        <td><strong>+3 positions higher than review count predicts</strong></td>
+      </tr>
+      <tr style="background:#fffbeb;">
+        <td><strong>#4</strong></td>
+        <td><strong>Digital Mktg 1on1 SEO</strong></td>
+        <td><strong>5</strong></td>
+        <td><strong>#7</strong></td>
+        <td><strong>+3 positions higher than review count predicts</strong></td>
+      </tr>
+      <tr>
+        <td>#5</td>
+        <td>Stax Digital</td>
+        <td>15</td>
+        <td>#5</td>
+        <td>0 (matches)</td>
+      </tr>
+      <tr style="background:#fee2e2;">
+        <td><strong>#6</strong></td>
+        <td><strong>Seota</strong></td>
+        <td><strong>48</strong></td>
+        <td><strong>#2</strong></td>
+        <td><strong>−4 positions lower than review count predicts</strong></td>
+      </tr>
+      <tr>
+        <td>#7</td>
+        <td>BlueMatrix</td>
+        <td>19</td>
+        <td>#4</td>
+        <td>−3 positions lower than review count predicts</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="obs-box">
+    <div class="obs-label">Observation</div>
+    <div class="obs-value">Review count alone correctly predicts the rank position for only 2 of 7 businesses (#1 Osky Blue and #5 Stax Digital). The largest upward deviations (A Call To Thrive +3 and Digital Mktg 1on1 +3) both occur with very low review counts. The largest downward deviation (Seota −4) occurs despite having the second-highest review count in the set. This indicates that at least one other factor is overriding review count for positions 2–7.</div>
+  </div>
+</div>
+
+<!-- SECTION 2: Ranking Despite Weak Branding -->
+<div class="card">
+  <h2>2. Businesses That Rank Despite Weak Branding Signals</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Business Name</th>
+        <th>Name Contains Keywords?</th>
+        <th>Name Contains Location?</th>
+        <th>Brand Distinctiveness</th>
+        <th>Online Visibility Beyond GBP</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>#1</td>
+        <td>Osky Blue</td>
+        <td><span class="tag tag-no">No</span></td>
+        <td><span class="tag tag-no">No</span></td>
+        <td>Abstract brand name, no service indicator</td>
+        <td>Strong — standalone website, social profiles, 133 reviews</td>
+      </tr>
+      <tr>
+        <td>#2</td>
+        <td>AAA Digital Marketing Agency</td>
+        <td><span class="tag tag-yes">Yes</span> — "Digital Marketing Agency"</td>
+        <td><span class="tag tag-no">No</span></td>
+        <td>Keyword-rich name, "AAA" prefix</td>
+        <td>Moderate — 46 reviews, GBP Products</td>
+      </tr>
+      <tr style="background:#fffbeb;">
+        <td><strong>#3</strong></td>
+        <td><strong>A Call To Thrive</strong></td>
+        <td><span class="tag tag-no">No</span></td>
+        <td><span class="tag tag-no">No</span></td>
+        <td><strong>Abstract/motivational name, no service indicator</strong></td>
+        <td><strong>Weak — only 7 reviews, no observed GBP Products</strong></td>
+      </tr>
+      <tr style="background:#fffbeb;">
+        <td><strong>#4</strong></td>
+        <td><strong>Digital Marketing 1on1 SEO</strong></td>
+        <td><span class="tag tag-yes">Yes</span> — "Digital Marketing" + "SEO"</td>
+        <td><span class="tag tag-no">No</span></td>
+        <td><strong>Heavily keyword-loaded name</strong></td>
+        <td><strong>Weak — only 5 reviews, minimal presence</strong></td>
+      </tr>
+      <tr>
+        <td>#5</td>
+        <td>Stax Digital Agency</td>
+        <td><span class="tag tag-yes">Yes</span> — "Digital Agency"</td>
+        <td><span class="tag tag-no">No</span></td>
+        <td>Short brand + keyword tail</td>
+        <td>Moderate — 15 reviews</td>
+      </tr>
+      <tr>
+        <td>#6</td>
+        <td>Seota</td>
+        <td><span class="tag tag-no">No</span></td>
+        <td><span class="tag tag-no">No</span></td>
+        <td>Abstract brand name</td>
+        <td>Strong — 48 reviews, 71+ photos, 15+ year tenure, social profiles</td>
+      </tr>
+      <tr>
+        <td>#7</td>
+        <td>BlueMatrix Media</td>
+        <td><span class="tag tag-partial">Partial</span> — "Media"</td>
+        <td><span class="tag tag-no">No</span></td>
+        <td>Brand + generic "Media"</td>
+        <td>Moderate — 19 reviews, 10+ year tenure</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="outlier-card">
+    <div class="outlier-label">Outlier — A Call To Thrive (Rank #3, No Industry Keywords, Minimal Online Presence)</div>
+    <div class="outlier-text">
+      "A Call To Thrive" contains no industry keywords ("marketing," "digital," "agency," "SEO") in its business name. It has only 7 reviews, no observed GBP Products, and no visible external review platform presence. Yet it outranks Seota (#6), which has 48 reviews, 71+ photos, 15+ years tenure, and linked social profiles on Facebook, LinkedIn, Instagram, and X. A Call To Thrive's primary GBP category is "Marketing agency" — a direct match for the query.
+    </div>
+  </div>
+
+  <div class="outlier-card">
+    <div class="outlier-label">Outlier — Osky Blue (Rank #1, No Industry Keywords in Name)</div>
+    <div class="outlier-text">
+      "Osky Blue" contains zero industry or location keywords. The name gives no indication of what the business does. Despite this, it holds the #1 position. Its primary category is "Marketing consultant" — a partial match for "marketing agency." Its 133 reviews represent 2.8× the next-closest competitor.
+    </div>
+  </div>
+
+  <div class="obs-box">
+    <div class="obs-label">Observation</div>
+    <div class="obs-value">Three of the top 4 rankings are held by businesses whose names contain no direct industry keywords: Osky Blue (#1), A Call To Thrive (#3), and partially Stax Digital Agency (#5, only generic "Agency"). Meanwhile, the most keyword-dense name — "Digital Marketing 1on1 SEO" (#4) — does not appear to gain a dominant ranking advantage from its name alone, ranking below A Call To Thrive which has no keywords. The presence or absence of industry keywords in the business name does not correlate with rank position in this dataset.</div>
+  </div>
+</div>
+
+<!-- SECTION 3: Factor Dominance Analysis -->
+<div class="card">
+  <h2>3. Ranking Factor Dominance — Observed Correlations</h2>
+
+  <h3>Factor-by-Factor Correlation With Rank Position</h3>
+
+  <div class="factor-bar-wrap">
+    <div class="factor-row">
+      <div class="factor-name">Category Relevance</div>
+      <div class="factor-bar-track"><div class="factor-bar bar-dominant" style="width:92%;">Strongest observed correlation</div></div>
+    </div>
+    <div class="factor-row">
+      <div class="factor-name">Review Volume</div>
+      <div class="factor-bar-track"><div class="factor-bar bar-strong" style="width:75%;">Strong at extremes (#1), weaker mid-pack</div></div>
+    </div>
+    <div class="factor-row">
+      <div class="factor-name">Proximity (Frisco address)</div>
+      <div class="factor-bar-track"><div class="factor-bar bar-moderate" style="width:55%;">Gating factor — all 7 are in Frisco</div></div>
+    </div>
+    <div class="factor-row">
+      <div class="factor-name">Keyword Usage (name/desc)</div>
+      <div class="factor-bar-track"><div class="factor-bar bar-weak" style="width:30%;">No observable correlation with rank</div></div>
+    </div>
+    <div class="factor-row">
+      <div class="factor-name">Profile Activity / Freshness</div>
+      <div class="factor-bar-track"><div class="factor-bar bar-negligible" style="width:15%;">No observable correlation with rank</div></div>
+    </div>
+  </div>
+
+  <!-- FACTOR A: Category Relevance -->
+  <h3>A. Category Relevance — Observed Correlation: Strongest</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Business</th>
+        <th>Primary Category</th>
+        <th>Match to "digital marketing agency"</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>#1</td><td>Osky Blue</td><td>Marketing consultant</td><td><span class="tag tag-partial">Partial</span> — "Marketing" matches; "consultant" ≠ "agency"</td></tr>
+      <tr><td>#2</td><td>AAA Digital</td><td>Marketing agency</td><td><span class="tag tag-match">Exact</span></td></tr>
+      <tr><td>#3</td><td>A Call To Thrive</td><td>Marketing agency</td><td><span class="tag tag-match">Exact</span></td></tr>
+      <tr><td>#6</td><td>Seota</td><td>Website designer</td><td><span class="tag tag-weak">Weak</span> — no "marketing" or "agency"</td></tr>
+    </tbody>
+  </table>
+
+  <div class="obs-box">
+    <div class="obs-label">Observation — Category Relevance</div>
+    <div class="obs-value">The two businesses with "Marketing agency" as their primary category (AAA Digital and A Call To Thrive) rank #2 and #3 respectively. A Call To Thrive's #3 position with only 7 reviews is explainable almost entirely by this factor. Seota, with 48 reviews, 71+ photos, 15+ years tenure, and 6 secondary categories, ranks #6 — and its primary category ("Website designer") is the weakest match for the query. The only business overriding a non-exact category match is Osky Blue (#1), whose 133-review volume appears to compensate for "Marketing consultant" vs. "Marketing agency." Across the dataset, primary category match is the only factor that explains both the upward outliers (A Call To Thrive) and the downward outlier (Seota) simultaneously.</div>
+  </div>
+
+  <!-- FACTOR B: Review Volume -->
+  <h3>B. Review Volume (Review Authority) — Observed Correlation: Strong at Extremes</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Business</th>
+        <th>Reviews</th>
+        <th>Rank Predicted by Reviews Alone</th>
+        <th>Deviation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="cell-high"><td>#1</td><td>Osky Blue</td><td>133</td><td>#1</td><td>0</td></tr>
+      <tr><td>#2</td><td>AAA Digital</td><td>46</td><td>#3</td><td>+1</td></tr>
+      <tr class="cell-med"><td>#3</td><td>A Call To Thrive</td><td>7</td><td>#6</td><td><strong>+3</strong></td></tr>
+      <tr class="cell-med"><td>#4</td><td>Digital Mktg 1on1</td><td>5</td><td>#7</td><td><strong>+3</strong></td></tr>
+      <tr><td>#5</td><td>Stax Digital</td><td>15</td><td>#5</td><td>0</td></tr>
+      <tr class="cell-low"><td>#6</td><td>Seota</td><td>48</td><td>#2</td><td><strong>−4</strong></td></tr>
+      <tr class="cell-low"><td>#7</td><td>BlueMatrix</td><td>19</td><td>#4</td><td><strong>−3</strong></td></tr>
+    </tbody>
+  </table>
+
+  <div class="obs-box">
+    <div class="obs-label">Observation — Review Volume</div>
+    <div class="obs-value">Review count correctly predicts rank for only 2 of 7 positions. At the extreme (Osky Blue, 133 reviews), review volume is a dominant signal — it overrides even a non-exact category match. In the mid-range (5–48 reviews), review count is a weak predictor: Seota at 48 reviews ranks below businesses with 5 and 7 reviews. This suggests review volume operates as a dominant factor only above a certain threshold (roughly 100+ in this dataset), below which category relevance takes precedence.</div>
+  </div>
+
+  <!-- FACTOR C: Proximity -->
+  <h3>C. Proximity (Verified Frisco Address) — Observed Correlation: Gating Factor</h3>
+
+  <div class="obs-box">
+    <div class="obs-label">Observation — Proximity</div>
+    <div class="obs-value">All 7 ranked businesses have verified Frisco addresses. Zero service-area-only businesses appear. This makes proximity a binary gating factor for this query: a Frisco address is required to appear, but within Frisco, address location does not observably differentiate rank positions. Osky Blue (3001 Dallas Pkwy) and Seota (2591 Dallas Pkwy) are within 0.5 miles of each other on the same road, yet rank #1 and #6 respectively. The competitor outside Frisco city limits — Kinetic Curve (Prosper, TX 75078) — does not appear in these results at all.</div>
+  </div>
+
+  <!-- FACTOR D: Keyword Usage -->
+  <h3>D. Keyword Usage in Business Names and Descriptions — Observed Correlation: None Detected</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Business</th>
+        <th>Keywords in Name</th>
+        <th>Keywords in Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>#1</td><td>Osky Blue</td><td>None</td><td>"Frisco, Texas" in from-business text</td></tr>
+      <tr><td>#2</td><td>AAA Digital Marketing Agency</td><td>"Digital Marketing Agency"</td><td>Not assessed</td></tr>
+      <tr><td>#3</td><td>A Call To Thrive</td><td>None</td><td>Not assessed</td></tr>
+      <tr><td>#4</td><td>Digital Marketing 1on1 SEO</td><td>"Digital Marketing" + "SEO"</td><td>Not assessed</td></tr>
+      <tr><td>#5</td><td>Stax Digital Agency</td><td>"Digital Agency"</td><td>Not assessed</td></tr>
+      <tr><td>#6</td><td>Seota</td><td>None</td><td>"digital marketing agency," "web design," "SEO," "Frisco" ×3</td></tr>
+      <tr><td>#7</td><td>BlueMatrix Media</td><td>"Media"</td><td>Not assessed</td></tr>
+    </tbody>
+  </table>
+
+  <div class="obs-box">
+    <div class="obs-label">Observation — Keyword Usage</div>
+    <div class="obs-value">No correlation is observable between keyword density in the business name and rank position. The #1 and #3 positions are held by businesses with zero industry keywords in their names. The most keyword-dense name ("Digital Marketing 1on1 SEO") ranks #4, not #1. Seota's description contains the exact query phrase "digital marketing agency" along with "Frisco" mentioned three times, yet Seota ranks #6. Keyword usage in descriptions and business names does not appear to influence rank position for this query in any observable way within this dataset.</div>
+  </div>
+
+  <!-- FACTOR E: Profile Activity / Freshness -->
+  <h3>E. Profile Activity / Freshness (GBP Posts) — Observed Correlation: None Detected</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Business</th>
+        <th>Last Observed GBP Post</th>
+        <th>Posting Frequency</th>
+        <th>Post Recency</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>#1</td><td>Osky Blue</td><td>October 2021</td><td>Inactive for 4+ years</td><td><span class="tag tag-weak">Stale (4+ years)</span></td></tr>
+      <tr><td>#6</td><td>Seota</td><td>16 hours ago (Mar 17, 2026)</td><td>1–2 posts per month, currently active</td><td><span class="tag tag-match">Very Fresh</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="obs-box">
+    <div class="obs-label">Observation — Profile Activity / Freshness</div>
+    <div class="obs-value">The #1-ranked business (Osky Blue) has not posted to its GBP since October 2021 — over 4 years of inactivity. The #6-ranked business (Seota) posted within the last 16 hours and maintains a consistent 1–2 post per month cadence with long-form case studies and branded graphics. This is the reverse of what would be expected if posting activity influenced rank. The business with the freshest, most active profile ranks 5 positions lower than the business with the stalest profile. Within this dataset, GBP posting frequency and recency show zero positive correlation with rank position.</div>
+  </div>
+</div>
+
+<!-- SECTION 4: Factor Interaction Matrix -->
+<div class="card">
+  <h2>4. Factor Interaction — How Combinations Produce Rank</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Business</th>
+        <th style="text-align:center;">Category Match</th>
+        <th style="text-align:center;">Review Volume</th>
+        <th style="text-align:center;">Frisco Address</th>
+        <th style="text-align:center;">Keywords in Name</th>
+        <th style="text-align:center;">Post Freshness</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>#1</td>
+        <td>Osky Blue</td>
+        <td class="matrix-cell cell-med">Partial</td>
+        <td class="matrix-cell cell-high">133 (Highest)</td>
+        <td class="matrix-cell cell-high">Yes</td>
+        <td class="matrix-cell cell-low">None</td>
+        <td class="matrix-cell cell-low">4+ yrs stale</td>
+      </tr>
+      <tr>
+        <td>#2</td>
+        <td>AAA Digital</td>
+        <td class="matrix-cell cell-high">Exact</td>
+        <td class="matrix-cell cell-med">46</td>
+        <td class="matrix-cell cell-high">Yes</td>
+        <td class="matrix-cell cell-high">"Digital Marketing Agency"</td>
+        <td class="matrix-cell cell-na">Not assessed</td>
+      </tr>
+      <tr>
+        <td>#3</td>
+        <td>A Call To Thrive</td>
+        <td class="matrix-cell cell-high">Exact</td>
+        <td class="matrix-cell cell-low">7</td>
+        <td class="matrix-cell cell-high">Yes</td>
+        <td class="matrix-cell cell-low">None</td>
+        <td class="matrix-cell cell-na">Not assessed</td>
+      </tr>
+      <tr>
+        <td>#4</td>
+        <td>Digital Mktg 1on1</td>
+        <td class="matrix-cell cell-na">—</td>
+        <td class="matrix-cell cell-low">5</td>
+        <td class="matrix-cell cell-high">Yes</td>
+        <td class="matrix-cell cell-high">"Digital Marketing" + "SEO"</td>
+        <td class="matrix-cell cell-na">Not assessed</td>
+      </tr>
+      <tr>
+        <td>#5</td>
+        <td>Stax Digital</td>
+        <td class="matrix-cell cell-na">—</td>
+        <td class="matrix-cell cell-med">15</td>
+        <td class="matrix-cell cell-high">Yes</td>
+        <td class="matrix-cell cell-med">"Digital Agency"</td>
+        <td class="matrix-cell cell-na">Not assessed</td>
+      </tr>
+      <tr>
+        <td>#6</td>
+        <td>Seota</td>
+        <td class="matrix-cell cell-low">Weak</td>
+        <td class="matrix-cell cell-med">48</td>
+        <td class="matrix-cell cell-high">Yes</td>
+        <td class="matrix-cell cell-low">None</td>
+        <td class="matrix-cell cell-high">Active (today)</td>
+      </tr>
+      <tr>
+        <td>#7</td>
+        <td>BlueMatrix</td>
+        <td class="matrix-cell cell-na">—</td>
+        <td class="matrix-cell cell-med">19</td>
+        <td class="matrix-cell cell-high">Yes</td>
+        <td class="matrix-cell cell-med">"Media"</td>
+        <td class="matrix-cell cell-na">Not assessed</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="obs-box">
+    <div class="obs-label">Observation — Factor Interactions</div>
+    <div class="obs-value">The data shows two distinct paths to a top-3 position in this dataset:
+      <br><br>
+      <strong>Path observed at #1:</strong> Massive review volume (133) overrides a partial category match and the absence of all other signals (no keywords, no posting activity). Review volume at this scale appears to function as a standalone dominant signal.
+      <br><br>
+      <strong>Path observed at #2 and #3:</strong> Exact primary category match ("Marketing agency") enables top-3 ranking even with moderate (#2, 46 reviews) or minimal (#3, 7 reviews) review volume. Category relevance appears to function as a multiplier that amplifies the effect of other signals — or compensates for their absence.
+      <br><br>
+      <strong>Path observed at #6:</strong> High review volume (48), maximum profile completeness (71+ photos, active posting, rich descriptions), and 15+ years of tenure cannot compensate for a weak primary category match ("Website designer"). This combination produces only a #6 ranking.
+      <br><br>
+      No business in this dataset ranks in the top 3 with both a weak category match and fewer than 100 reviews.
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 5: Summary of Dominant vs Non-Dominant -->
+<div class="card">
+  <h2>5. Factor Ranking by Observed Dominance</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:50px;">#</th>
+        <th>Factor</th>
+        <th>Observed Role</th>
+        <th>Evidence Summary</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>1</strong></td>
+        <td><strong>Category Relevance</strong></td>
+        <td>Dominant differentiator</td>
+        <td>Explains both the largest upward outlier (+3 positions, A Call To Thrive) and the largest downward outlier (−4 positions, Seota). Only factor that accounts for both simultaneously.</td>
+      </tr>
+      <tr>
+        <td><strong>2</strong></td>
+        <td><strong>Review Volume</strong></td>
+        <td>Dominant at high volume; weak mid-range</td>
+        <td>Correctly predicts #1 position (133 reviews). Does not predict positions #2–#7 accurately. Below ~50 reviews, category match appears to override review count.</td>
+      </tr>
+      <tr>
+        <td><strong>3</strong></td>
+        <td><strong>Proximity</strong></td>
+        <td>Binary gating factor</td>
+        <td>All 7 ranked businesses are in Frisco. The Prosper-based competitor (Kinetic Curve, 67 reviews, 5.0★) does not appear. Within Frisco, distance between businesses does not correlate with rank differences.</td>
+      </tr>
+      <tr>
+        <td><strong>4</strong></td>
+        <td><strong>Keyword Usage</strong></td>
+        <td>No observable effect</td>
+        <td>#1 and #3 positions held by businesses with no keywords. Most keyword-dense name ranks #4. Seota's description contains the exact query phrase yet ranks #6.</td>
+      </tr>
+      <tr>
+        <td><strong>5</strong></td>
+        <td><strong>Profile Activity / Freshness</strong></td>
+        <td>No observable effect</td>
+        <td>Most active poster (Seota) ranks #6. Least active profile (Osky Blue, 4+ years stale) ranks #1. Negative correlation observed.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div style="text-align: center; padding: 20px; color: #94a3b8; font-size: 12px;">
+  Ranking Outliers &amp; Dominant Factors — Observed from live Google Local Finder results, March 17, 2026<br>
+  Keyword: "digital marketing agency Frisco TX" · Top 7 positions analyzed · Category data confirmed via GMB extension on Google Maps
+</div>
+
+</div>
+</body>
+</html>

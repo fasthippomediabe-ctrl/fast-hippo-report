@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Review Acquisition &amp; Response Framework — Fast Hippo Media</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: #f0f2f5; color: #1a1a2e; line-height: 1.6; }
+.container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+.header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); color: white; border-radius: 16px; padding: 40px; margin-bottom: 24px; }
+.header h1 { font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+.header .subtitle { font-size: 14px; color: #94a3b8; }
+.header .date { font-size: 12px; color: #64748b; margin-top: 8px; }
+.card { background: white; border-radius: 12px; padding: 28px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.card h2 { font-size: 19px; font-weight: 700; margin-bottom: 16px; color: #1a1a2e; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+.card h3 { font-size: 15px; font-weight: 700; margin: 18px 0 10px; color: #0f3460; }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13.5px; }
+th { background: #f8fafc; text-align: left; padding: 10px 14px; font-weight: 600; border-bottom: 2px solid #e2e8f0; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+tr:hover td { background: #fafbfc; }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin: 2px; }
+.tag-green { background: #dcfce7; color: #166534; }
+.tag-blue { background: #dbeafe; color: #1e40af; }
+.tag-yellow { background: #fef3c7; color: #92400e; }
+.tag-red { background: #fee2e2; color: #991b1b; }
+.tag-purple { background: #f3e8ff; color: #6b21a8; }
+.insight { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; }
+.insight strong { color: #1e40af; }
+.warning { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; }
+.template { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin: 12px 0; }
+.template-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #64748b; margin-bottom: 8px; }
+.template-body { font-size: 13.5px; line-height: 1.7; white-space: pre-wrap; }
+.placeholder { background: #fef3c7; padding: 1px 4px; border-radius: 3px; font-weight: 600; }
+.count-badge { display: inline-block; background: #1e293b; color: white; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin: 14px 0; }
+.col-card { border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; }
+.col-card .name { font-weight: 700; font-size: 14px; margin-bottom: 8px; }
+.col-card .detail { font-size: 13px; color: #475569; margin-bottom: 4px; }
+.keyword-cloud { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+.kw-tag { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 16px; font-size: 12px; font-weight: 600; }
+.kw-high { background: #0f3460; color: white; }
+.kw-med { background: #3b82f6; color: white; }
+.kw-low { background: #93c5fd; color: #1e3a5f; }
+.priority-item { display: flex; gap: 14px; margin: 14px 0; align-items: flex-start; }
+.priority-num { width: 32px; height: 32px; border-radius: 50%; background: #0f3460; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+.priority-content { flex: 1; }
+.priority-content .action { font-weight: 600; color: #1a1a2e; }
+.reply-example { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 14px; margin: 8px 0; font-size: 13px; }
+.reply-bad { background: #fef2f2; border: 1px solid #fecaca; }
+.freq-bar { display: flex; align-items: center; margin: 6px 0; }
+.freq-label { width: 140px; font-size: 13px; font-weight: 500; }
+.freq-track { flex: 1; height: 24px; background: #f1f5f9; border-radius: 4px; }
+.freq-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: 11px; font-weight: 600; color: white; }
+@media (max-width: 768px) { .three-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <h1>Review Acquisition &amp; Response Framework</h1>
+  <div class="subtitle">For Fast Hippo Media — Based on Competitor Review Analysis</div>
+  <div class="date">Data collected March 17, 2026 — Osky Blue (133 reviews), Seota (48 reviews), Kinetic Curve (67 reviews)</div>
+</div>
+
+<!-- SECTION 1: Competitor Review Intelligence -->
+<div class="card">
+  <h2>1. Competitor Review Intelligence — What We Observed</h2>
+
+  <div class="three-col">
+    <div class="col-card">
+      <div class="name">Osky Blue <span class="count-badge">133</span> 4.8★</div>
+      <div class="detail"><strong>Velocity:</strong> ~8-10 reviews/year currently (slowing)</div>
+      <div class="detail"><strong>Recency:</strong> Most recent visible: 3 years ago (Most Relevant sort)</div>
+      <div class="detail"><strong>Bulk source:</strong> ~70+ reviews from seminar/training events (11-12 yrs ago)</div>
+      <div class="detail"><strong>Reply rate:</strong> ~30% (selective, recent reviews only)</div>
+      <div class="detail"><strong>Reply style:</strong> 1-2 sentences, first name, no keywords</div>
+      <div class="detail"><strong>Named staff:</strong> Annie, Jon Kendall, Kim, Jeff</div>
+    </div>
+    <div class="col-card">
+      <div class="name">Seota <span class="count-badge">48</span> 4.8★</div>
+      <div class="detail"><strong>Velocity:</strong> ~6-8 reviews/year (steady)</div>
+      <div class="detail"><strong>Recency:</strong> Most recent: 3 months ago; owner replied 16 hrs ago</div>
+      <div class="detail"><strong>Bulk source:</strong> Genuine client projects (website/Shopify builds)</div>
+      <div class="detail"><strong>Reply rate:</strong> ~60-70% (most recent reviews replied to)</div>
+      <div class="detail"><strong>Reply style:</strong> 1-3 sentences, personal + warm, no strategic keywords</div>
+      <div class="detail"><strong>Named staff:</strong> Matt Larson, Bill</div>
+    </div>
+    <div class="col-card" style="border-color: #22c55e; background: #f0fdf4;">
+      <div class="name">Kinetic Curve <span class="count-badge">67</span> 5.0★</div>
+      <div class="detail"><strong>Velocity:</strong> ~2-3 reviews/month (aggressive)</div>
+      <div class="detail"><strong>Recency:</strong> Most recent: 1 month ago; constant flow</div>
+      <div class="detail"><strong>Bulk source:</strong> Consultations, speaking events, podcast guests</div>
+      <div class="detail"><strong>Reply rate:</strong> ~100% (every review gets a reply)</div>
+      <div class="detail"><strong>Reply style:</strong> 3-5 sentences, keyword-loaded, names client business + location</div>
+      <div class="detail"><strong>Named staff:</strong> Nick Gartside, Lindsay, Leah</div>
+    </div>
+  </div>
+
+  <h3>Google's Auto-Generated Keyword Tags (from Review Content)</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Osky Blue Keywords</th>
+        <th>Seota Keywords</th>
+        <th>Kinetic Curve Keywords</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <span class="tag tag-blue">SEO 38</span>
+          <span class="tag tag-blue">information 36</span>
+          <span class="tag tag-yellow">seminar 24</span>
+          <span class="tag tag-yellow">learned 20</span>
+          <span class="tag tag-yellow">presentation 18</span>
+          <span class="tag tag-yellow">training 11</span>
+          <span class="tag tag-yellow">linkedin 10</span>
+          <span class="tag tag-yellow">wealth 8</span>
+          <span class="tag tag-green">web design 8</span>
+          <span class="tag tag-yellow">education 6</span>
+        </td>
+        <td>
+          <span class="tag tag-green">job 8</span>
+          <span class="tag tag-green">project 6</span>
+          <span class="tag tag-green">wordpress 5</span>
+          <span class="tag tag-green">small business 4</span>
+          <span class="tag tag-green">companies 4</span>
+          <span class="tag tag-green">brand 4</span>
+          <span class="tag tag-green">communications 3</span>
+          <span class="tag tag-green">web development 3</span>
+          <span class="tag tag-green">results 3</span>
+          <span class="tag tag-green">ecommerce 2</span>
+        </td>
+        <td>
+          <span class="tag tag-purple">social media 10</span>
+          <span class="tag tag-purple">informative 8</span>
+          <span class="tag tag-purple">strategy 5</span>
+          <span class="tag tag-purple">ideas 4</span>
+          <span class="tag tag-purple">speaker 3</span>
+          <span class="tag tag-purple">presentation 3</span>
+          <span class="tag tag-purple">podcast 2</span>
+          <span class="tag tag-purple">resource 2</span>
+          <span class="tag tag-purple">insight 2</span>
+          <span class="tag tag-purple">partnership 2</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="insight">
+    <strong>Key Observation:</strong> Osky Blue's keyword tags are dominated by seminar/training language (seminar, learned, presentation, training, education = 79 of 189 tagged mentions). This means ~42% of their review keyword signals come from event attendees, not paying clients. Seota's keywords are all client-project language (project, wordpress, web development, ecommerce). Kinetic Curve's mix strategy/consulting language with social proof terms (social media, strategy, speaker, podcast). Google generates these tags automatically from review text — the words your clients naturally use in reviews become your keyword signals.
+  </div>
+</div>
+
+<!-- SECTION 2: Review Velocity & Recency -->
+<div class="card">
+  <h2>2. Review Velocity Comparison &amp; Pacing Targets</h2>
+
+  <h3>Observed Monthly Review Velocity</h3>
+  <div style="margin: 12px 0 20px;">
+    <div class="freq-bar">
+      <div class="freq-label">Kinetic Curve</div>
+      <div class="freq-track"><div class="freq-fill" style="width: 80%; background: linear-gradient(90deg, #22c55e, #10b981);">2-3 reviews/month</div></div>
+    </div>
+    <div class="freq-bar">
+      <div class="freq-label">Osky Blue</div>
+      <div class="freq-track"><div class="freq-fill" style="width: 25%; background: linear-gradient(90deg, #3b82f6, #6366f1);">~0.7/month (slowing)</div></div>
+    </div>
+    <div class="freq-bar">
+      <div class="freq-label">Seota</div>
+      <div class="freq-track"><div class="freq-fill" style="width: 20%; background: linear-gradient(90deg, #f59e0b, #fb923c);">~0.5-0.7/month</div></div>
+    </div>
+    <div class="freq-bar">
+      <div class="freq-label" style="font-weight:700;">Fast Hippo (Target)</div>
+      <div class="freq-track"><div class="freq-fill" style="width: 60%; background: linear-gradient(90deg, #dc2626, #ef4444);">3-4 reviews/month (Year 1)</div></div>
+    </div>
+  </div>
+
+  <h3>Review Pacing Plan for Fast Hippo Media</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Phase</th>
+        <th>Duration</th>
+        <th>Target Volume</th>
+        <th>Monthly Pace</th>
+        <th>Cumulative Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Phase 1: Sprint</strong></td>
+        <td>Months 1-3</td>
+        <td>15 new reviews</td>
+        <td>5/month</td>
+        <td>15 → 30 total</td>
+      </tr>
+      <tr>
+        <td><strong>Phase 2: Build</strong></td>
+        <td>Months 4-6</td>
+        <td>12 new reviews</td>
+        <td>4/month</td>
+        <td>30 → 42 total</td>
+      </tr>
+      <tr>
+        <td><strong>Phase 3: Sustain</strong></td>
+        <td>Months 7-12</td>
+        <td>18 new reviews</td>
+        <td>3/month</td>
+        <td>42 → 60 total</td>
+      </tr>
+      <tr style="background: #f0fdf4;">
+        <td><strong>12-Month Result</strong></td>
+        <td>Full Year</td>
+        <td><strong>45 new reviews</strong></td>
+        <td>Avg 3.75/mo</td>
+        <td><strong>60 total (surpass Seota's 48)</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="insight">
+    <strong>Why these numbers:</strong> At 3-4 reviews/month, you outpace Seota (~0.6/mo) and match Kinetic Curve (~2.5/mo). By month 12, your 60 reviews would surpass Seota (48) and put you within striking distance of Kinetic Curve (67). Osky Blue's 133 is a long-term target (18-24 months at this pace). The sprint phase leverages your existing 200+ client base for a quick catch-up burst.
+  </div>
+</div>
+
+<!-- SECTION 3: Keyword Themes to Reinforce -->
+<div class="card">
+  <h2>3. Keyword Themes to Reinforce in Reviews</h2>
+
+  <p style="font-size: 14px; color: #475569; margin-bottom: 16px;">Google extracts keyword tags from review text automatically. The words your clients use organically become ranking signals. Based on the competitor keyword analysis, these are the themes to actively encourage when asking for reviews.</p>
+
+  <h3>Primary Keywords (Mention in Every Review Request Prompt)</h3>
+  <div class="keyword-cloud">
+    <span class="kw-tag kw-high">digital marketing</span>
+    <span class="kw-tag kw-high">SEO</span>
+    <span class="kw-tag kw-high">website</span>
+    <span class="kw-tag kw-high">Frisco</span>
+    <span class="kw-tag kw-high">results</span>
+  </div>
+  <p style="font-size: 13px; color: #64748b; margin-top: 4px;">Why: "SEO" drives 38 keyword tags for Osky Blue alone. "Website/web design" appears across all 3 competitors. "Frisco" is the geo-target. "Results" signals outcome-focused work.</p>
+
+  <h3>Secondary Keywords (Rotate Based on Service Delivered)</h3>
+  <div class="keyword-cloud">
+    <span class="kw-tag kw-med">web design</span>
+    <span class="kw-tag kw-med">PPC</span>
+    <span class="kw-tag kw-med">Google Ads</span>
+    <span class="kw-tag kw-med">social media</span>
+    <span class="kw-tag kw-med">content marketing</span>
+    <span class="kw-tag kw-med">small business</span>
+  </div>
+
+  <h3>Differentiator Keywords (Unique to Fast Hippo — No Competitor Owns These)</h3>
+  <div class="keyword-cloud">
+    <span class="kw-tag" style="background: #dc2626; color: white;">AEO</span>
+    <span class="kw-tag" style="background: #dc2626; color: white;">Answer Engine Optimization</span>
+    <span class="kw-tag" style="background: #dc2626; color: white;">AI visibility</span>
+    <span class="kw-tag" style="background: #dc2626; color: white;">Content Everywhere</span>
+    <span class="kw-tag" style="background: #dc2626; color: white;">ChatGPT optimization</span>
+  </div>
+  <p style="font-size: 13px; color: #64748b; margin-top: 4px;">Why: Zero competitors have AEO-related keyword tags in their reviews. This is entirely uncontested keyword territory. If even 5-10 reviews mention "AEO" or "Answer Engine Optimization," Fast Hippo Media would be the only business in the Frisco market with those signals.</p>
+
+  <h3>How to Prompt Keywords Without Scripting Reviews</h3>
+  <div class="template">
+    <div class="template-label">Review Request Email/Text — Keyword Prompt Method</div>
+    <div class="template-body">Hi <span class="placeholder">[CLIENT NAME]</span>,
+
+Thank you for trusting Fast Hippo Media with your <span class="placeholder">[SERVICE: SEO / web design / PPC / AEO strategy]</span>.
+
+If you have a moment, we'd really appreciate a Google review sharing your experience. A few things that help other Frisco businesses find us:
+
+— What service we provided (e.g., <span class="placeholder">[SEO, website redesign, Google Ads, AEO]</span>)
+— What results or outcomes you noticed
+— Anything about working with our team
+
+Here's the direct link: <span class="placeholder">[GOOGLE REVIEW LINK]</span>
+
+Thanks so much,
+<span class="placeholder">[YOUR NAME]</span>, Fast Hippo Media</div>
+  </div>
+
+  <div class="warning">
+    <strong>Important:</strong> Never script or pre-write reviews for clients — this violates Google's policies and can result in review removal or GBP suspension. The prompt above works by reminding clients what to talk about (service type, results, team), which naturally generates the keyword-rich language you need. This is the same approach that produces Seota's "wordpress," "shopify," and "web development" keyword tags organically.
+  </div>
+</div>
+
+<!-- SECTION 4: Owner Reply Framework -->
+<div class="card">
+  <h2>4. Owner Reply Framework — Three Competitor Approaches Compared</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:160px;">Attribute</th>
+        <th>Osky Blue (Rank #1)</th>
+        <th>Seota (Rank #6)</th>
+        <th>Kinetic Curve (Best Practice)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Reply rate</strong></td>
+        <td>~30% <span class="tag tag-red">Low</span></td>
+        <td>~60-70% <span class="tag tag-yellow">Medium</span></td>
+        <td>~100% <span class="tag tag-green">High</span></td>
+      </tr>
+      <tr>
+        <td><strong>Reply speed</strong></td>
+        <td>Months-to-years delayed</td>
+        <td>Days to weeks</td>
+        <td>Same day to within days</td>
+      </tr>
+      <tr>
+        <td><strong>Reply length</strong></td>
+        <td>1-2 sentences</td>
+        <td>1-3 sentences</td>
+        <td>3-5 sentences</td>
+      </tr>
+      <tr>
+        <td><strong>Uses first name</strong></td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+      </tr>
+      <tr>
+        <td><strong>Names client's business</strong></td>
+        <td>No</td>
+        <td>No</td>
+        <td>Yes — every reply</td>
+      </tr>
+      <tr>
+        <td><strong>Includes location keywords</strong></td>
+        <td>No</td>
+        <td>No</td>
+        <td>Yes — "Prosper, Texas"</td>
+      </tr>
+      <tr>
+        <td><strong>Includes service keywords</strong></td>
+        <td>No</td>
+        <td>No</td>
+        <td>Yes — "marketing," "sales and revenue," "Google, Apple, Bing"</td>
+      </tr>
+      <tr>
+        <td><strong>Tone</strong></td>
+        <td>Professional, minimal</td>
+        <td>Warm, personal, sometimes playful</td>
+        <td>Enthusiastic, effusive, keyword-loaded</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="insight">
+    <strong>The Hybrid Approach for Fast Hippo:</strong> Kinetic Curve's 100% reply rate and keyword embedding is the most strategic approach observed. Seota's warm, personal tone is the most authentic. The optimal model for Fast Hippo is Kinetic Curve's structure (reply to every review, embed keywords) combined with Seota's tone (warm and genuine, not over-the-top). Avoid Osky Blue's approach of ignoring most reviews — despite ranking #1, their low reply rate is a missed keyword opportunity.
+  </div>
+
+  <h3>Fast Hippo Media Reply Template — 5-Star Reviews</h3>
+  <div class="reply-example">
+    <div class="template-label">Template Structure: Gratitude → Service Echo → Location → Forward Look</div>
+    <div class="template-body" style="font-size: 13.5px; line-height: 1.7;">Thank you so much, <span class="placeholder">[FIRST NAME]</span>! It's been a pleasure helping <span class="placeholder">[CLIENT BUSINESS NAME]</span> with <span class="placeholder">[SERVICE: your SEO strategy / new website / Google Ads campaign / AEO visibility]</span>. Seeing <span class="placeholder">[SPECIFIC RESULT: your organic traffic grow / your site launch successfully / your business show up in AI answers]</span> is exactly why we do what we do here in Frisco. Looking forward to continuing to drive results for your team!</div>
+  </div>
+
+  <h3>Reply Template — 4-Star Reviews</h3>
+  <div class="reply-example">
+    <div class="template-body" style="font-size: 13.5px; line-height: 1.7;">Thanks for the feedback, <span class="placeholder">[FIRST NAME]</span>! We appreciate you trusting Fast Hippo Media with your <span class="placeholder">[SERVICE]</span>. We're always looking for ways to deliver even better results for our Frisco clients — if there's anything we can improve on, we'd love to hear more. Your partnership means a lot to us.</div>
+  </div>
+
+  <h3>Reply Template — 1-3 Star Reviews</h3>
+  <div class="reply-example reply-bad">
+    <div class="template-body" style="font-size: 13.5px; line-height: 1.7;"><span class="placeholder">[FIRST NAME]</span>, thank you for sharing your experience. We take all feedback seriously and want to make sure every client gets the results they expect from our <span class="placeholder">[SERVICE]</span> work. I'd like to personally discuss what happened — please reach out to me directly at <span class="placeholder">[EMAIL/PHONE]</span> so we can address this. — <span class="placeholder">[YOUR NAME]</span>, Fast Hippo Media</div>
+  </div>
+
+  <h3>Keywords to Embed in Every Owner Reply</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Keyword Category</th>
+        <th>Exact Phrases to Rotate</th>
+        <th>How to Embed Naturally</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Location</strong></td>
+        <td>"Frisco" · "here in Frisco" · "DFW businesses" · "North Texas"</td>
+        <td>"...why we love serving businesses here in Frisco"</td>
+      </tr>
+      <tr>
+        <td><strong>Core Services</strong></td>
+        <td>"SEO" · "digital marketing" · "web design" · "PPC" · "Google Ads"</td>
+        <td>"...your new website / SEO campaign / Google Ads performance"</td>
+      </tr>
+      <tr>
+        <td><strong>Differentiators</strong></td>
+        <td>"AEO" · "Answer Engine Optimization" · "AI visibility" · "Content Everywhere"</td>
+        <td>"...getting your business visible in AI search results through our AEO approach"</td>
+      </tr>
+      <tr>
+        <td><strong>Outcomes</strong></td>
+        <td>"results" · "growth" · "leads" · "traffic" · "revenue"</td>
+        <td>"...seeing your traffic and leads grow is what drives us"</td>
+      </tr>
+      <tr>
+        <td><strong>Client Business</strong></td>
+        <td>Always name the client's business</td>
+        <td>"...helping [Business Name] achieve..." (mirrors Kinetic Curve)</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- SECTION 5: Review Acquisition Channels -->
+<div class="card">
+  <h2>5. Review Acquisition Channels — Ranked by Observed Competitor Success</h2>
+
+  <div class="priority-item">
+    <div class="priority-num">1</div>
+    <div class="priority-content">
+      <p class="action">Post-Project Completion Request (Seota's Primary Source)</p>
+      <p style="font-size:14px;">Every Seota review references a specific completed project: "custom Shopify site," "website redesign," "WordPress build." Send a review request within 48 hours of project delivery or a measurable milestone (traffic increase, site launch, first leads from a campaign). This is your highest-conversion moment.</p>
+      <p style="font-size:13px; color:#64748b; margin-top:4px;"><strong>Trigger:</strong> Website goes live, first month SEO report shows improvement, PPC campaign hits target ROAS, or AEO audit delivered.</p>
+    </div>
+  </div>
+
+  <div class="priority-item">
+    <div class="priority-num">2</div>
+    <div class="priority-content">
+      <p class="action">Consultation/Strategy Session Attendees (Kinetic Curve's Primary Source)</p>
+      <p style="font-size:14px;">Kinetic Curve generates ~50% of reviews from people who attended a consultation, podcast recording, or strategy session — not just paying clients. If you offer free audits, AEO assessments, or discovery calls, ask for a review afterward. The review mentions the experience, which generates "informative," "strategy," and "insight" keywords naturally.</p>
+      <p style="font-size:13px; color:#64748b; margin-top:4px;"><strong>Trigger:</strong> After any free audit, discovery call, AEO visibility check, or speaking engagement.</p>
+    </div>
+  </div>
+
+  <div class="priority-item">
+    <div class="priority-num">3</div>
+    <div class="priority-content">
+      <p class="action">Long-Term Client Check-In (Osky Blue's Client Retention Pattern)</p>
+      <p style="font-size:14px;">Patrick Cline's review of Osky Blue mentions "for seven years, they have always been professional." Long-term clients who haven't reviewed yet are low-hanging fruit. Send a personalized request to any client you've served for 6+ months who hasn't left a review.</p>
+      <p style="font-size:13px; color:#64748b; margin-top:4px;"><strong>Trigger:</strong> 6-month or 12-month client anniversary, quarterly business review, contract renewal.</p>
+    </div>
+  </div>
+
+  <div class="priority-item">
+    <div class="priority-num">4</div>
+    <div class="priority-content">
+      <p class="action">Event/Workshop Attendees (Osky Blue's Bulk Source)</p>
+      <p style="font-size:14px;">~70+ of Osky Blue's 133 reviews came from seminar/training attendees over a concentrated period. If you run any workshops, webinars, Frisco Chamber events, or speaking engagements, request reviews from attendees. This is a volume play — even non-clients can leave reviews about the educational value.</p>
+      <p style="font-size:13px; color:#64748b; margin-top:4px;"><strong>Trigger:</strong> Post-event follow-up email within 24 hours of any public event or webinar.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 6: Review Request Timing & Cadence -->
+<div class="card">
+  <h2>6. Review Request Timing &amp; Cadence</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Week</th>
+        <th>Action</th>
+        <th>Target</th>
+        <th>Template</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Week 1</strong></td>
+        <td>Send personalized requests to your 5 longest-tenured, happiest clients</td>
+        <td>3-4 reviews</td>
+        <td>Long-term client template (mention years working together)</td>
+      </tr>
+      <tr>
+        <td><strong>Week 2</strong></td>
+        <td>Send requests to clients who completed a project in the last 90 days</td>
+        <td>2-3 reviews</td>
+        <td>Post-project template (mention specific deliverable)</td>
+      </tr>
+      <tr>
+        <td><strong>Week 3</strong></td>
+        <td>Request reviews from any recent discovery call or audit recipients</td>
+        <td>1-2 reviews</td>
+        <td>Consultation template (mention the audit/assessment)</td>
+      </tr>
+      <tr>
+        <td><strong>Week 4</strong></td>
+        <td>Reply to ALL existing 15 reviews (backfill keyword-rich replies)</td>
+        <td>15 replies sent</td>
+        <td>Use reply templates from Section 4 above</td>
+      </tr>
+      <tr>
+        <td><strong>Ongoing</strong></td>
+        <td>Build review request into your project close-out workflow</td>
+        <td>1 request per completed project/milestone</td>
+        <td>Automated trigger in your CRM or project management tool</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="warning">
+    <strong>Pacing Rule:</strong> Never request more than 5 reviews in a single week. Google's spam filters flag sudden review spikes. Kinetic Curve's 2-3/month pace over many months is the pattern to emulate — steady and sustained beats a one-time blast. Osky Blue's seminar-burst pattern from 12 years ago would likely trigger filters today.
+  </div>
+</div>
+
+<!-- SECTION 7: Reply Execution Checklist -->
+<div class="card">
+  <h2>7. Reply Execution Checklist — For Every Review</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:40px;">✓</th>
+        <th>Requirement</th>
+        <th>Why (Observed From Competitors)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>□</td>
+        <td><strong>Reply within 48 hours</strong></td>
+        <td>Kinetic Curve replies within days. Seota's most recent reply was within hours. Osky Blue's months-late replies show disengagement.</td>
+      </tr>
+      <tr>
+        <td>□</td>
+        <td><strong>Use the reviewer's first name</strong></td>
+        <td>All three competitors do this consistently — "Thank you, Shane!" / "Andreh, it is always an honor"</td>
+      </tr>
+      <tr>
+        <td>□</td>
+        <td><strong>Name the client's business</strong></td>
+        <td>Kinetic Curve does this every time ("Samurai Jiu-Jitsu"). Seota and Osky Blue miss this opportunity entirely.</td>
+      </tr>
+      <tr>
+        <td>□</td>
+        <td><strong>Echo back the service mentioned</strong></td>
+        <td>If the reviewer mentions "website," reply with "your new website." If they mention "SEO," echo "your SEO campaign." Reinforces the keyword signal.</td>
+      </tr>
+      <tr>
+        <td>□</td>
+        <td><strong>Include "Frisco" or "DFW" once</strong></td>
+        <td>Kinetic Curve embeds "Prosper, Texas" in replies. Neither Seota nor Osky Blue do this — it's a missed geo-signal opportunity.</td>
+      </tr>
+      <tr>
+        <td>□</td>
+        <td><strong>Include one differentiator keyword when relevant</strong></td>
+        <td>"AEO," "Content Everywhere," or "AI visibility" — no competitor has these in any reply. Own this space.</td>
+      </tr>
+      <tr>
+        <td>□</td>
+        <td><strong>End with a forward-looking statement</strong></td>
+        <td>Kinetic Curve: "Looking forward to your incredible growth." Seota: "Thanks again for being a great client." A forward statement signals an active, ongoing relationship.</td>
+      </tr>
+      <tr>
+        <td>□</td>
+        <td><strong>Keep it 2-4 sentences (not 1, not 6)</strong></td>
+        <td>Seota's 1-sentence replies miss keyword opportunities. Kinetic Curve's 5+ sentence replies can feel excessive. 2-4 sentences is the sweet spot.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- SECTION 8: Immediate Backfill Action -->
+<div class="card">
+  <h2>8. Immediate Action: Backfill Replies on Your Existing 15 Reviews</h2>
+
+  <p style="font-size: 14px; margin-bottom: 16px;">Fast Hippo Media currently has 15 Google reviews with unknown reply coverage. Before acquiring new reviews, reply to every existing one using the framework above. This creates an immediate keyword signal boost and shows Google (and prospective clients) that you are actively engaged.</p>
+
+  <div class="priority-item">
+    <div class="priority-num">1</div>
+    <div class="priority-content">
+      <p class="action">Log into your GBP dashboard and open every existing review</p>
+      <p style="font-size:14px;">For each review, write a reply using the Section 4 template. Include the client's first name, their business name (if known), the service you provided, "Frisco," and one differentiator keyword when relevant.</p>
+    </div>
+  </div>
+
+  <div class="priority-item">
+    <div class="priority-num">2</div>
+    <div class="priority-content">
+      <p class="action">Space your replies: 3-5 per day over 3-4 days</p>
+      <p style="font-size:14px;">Don't reply to all 15 in one sitting. Spread them out to appear natural. This also gives each reply time to be indexed.</p>
+    </div>
+  </div>
+
+  <div class="priority-item">
+    <div class="priority-num">3</div>
+    <div class="priority-content">
+      <p class="action">After all 15 are replied to, begin the Week 1 acquisition campaign</p>
+      <p style="font-size:14px;">Start with your 5 longest, happiest client relationships. Use the review request template from Section 3.</p>
+    </div>
+  </div>
+</div>
+
+<div style="text-align: center; padding: 20px; color: #94a3b8; font-size: 12px;">
+  Fast Hippo Media — Review Acquisition &amp; Response Framework · March 17, 2026<br>
+  Based on observed review data: Osky Blue (133 reviews), Seota (48 reviews), Kinetic Curve (67 reviews)
+</div>
+
+</div>
+</body>
+</html>
