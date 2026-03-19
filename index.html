@@ -3,856 +3,110 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Competitive Analysis: Fast Hippo Media vs. Local Competitors</title>
+<title>GBP Growth Dashboard</title>
+
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+body {
+  font-family: Inter, sans-serif;
+  background: #f4f6fb;
+  margin: 0;
+}
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+.hero {
+  background: linear-gradient(135deg,#1a1a2e,#0f3460);
+  color: white;
+  padding: 60px 30px;
+  text-align: center;
+}
 
-  body {
-    font-family: 'Inter', -apple-system, sans-serif;
-    background: #f0f2f5;
-    color: #1a1a2e;
-    line-height: 1.6;
-  }
+.hero h1 {
+  margin: 0;
+  font-size: 2.2rem;
+}
 
-  .hero {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-    color: white;
-    padding: 60px 40px 50px;
-    text-align: center;
-  }
-  .hero h1 {
-    font-size: 2.4rem;
-    font-weight: 800;
-    margin-bottom: 10px;
-    letter-spacing: -0.5px;
-  }
-  .hero .subtitle {
-    font-size: 1.1rem;
-    opacity: 0.8;
-    font-weight: 300;
-  }
-  .hero .date {
-    margin-top: 15px;
-    font-size: 0.85rem;
-    opacity: 0.6;
-  }
+.grid {
+  max-width: 1100px;
+  margin: 40px auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+  gap: 20px;
+  padding: 0 20px;
+}
 
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 30px;
-  }
+.card {
+  background: white;
+  border-radius: 14px;
+  padding: 22px;
+  text-decoration: none;
+  color: #1a1a2e;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  transition: 0.2s;
+}
 
-  .nav-wrap {
-    max-width: 1200px;
-    margin: 24px auto;
-    padding: 0 30px;
-  }
+.card:hover {
+  transform: translateY(-5px);
+}
 
-  .nav-card {
-    background: white;
-    border-radius: 14px;
-    padding: 18px 22px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-  }
+.card h3 {
+  margin: 0 0 10px;
+}
 
-  .nav-card h3 {
-    margin: 0 0 12px;
-    font-size: 20px;
-    color: #1a1a2e;
-  }
-
-  .nav-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .nav-links a {
-    padding: 10px 14px;
-    border-radius: 10px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.92rem;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-  }
-
-  .nav-links a:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  }
-
-  .nav-rank { background: #eef2ff; color: #1e3a8a; }
-  .nav-products { background: #eff6ff; color: #1d4ed8; }
-  .nav-posting { background: #ecfeff; color: #0f766e; }
-  .nav-patterns { background: #f5f3ff; color: #6d28d9; }
-  .nav-outliers { background: #fff7ed; color: #c2410c; }
-  .nav-reviews { background: #f0fdf4; color: #166534; }
-  .nav-photo { background: #fdf2f8; color: #be185d; }
-
-  /* ---- YOUR BUSINESS PROFILE ---- */
-  .profile-section {
-    margin-top: -30px;
-    margin-bottom: 40px;
-  }
-  .profile-card {
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-    overflow: hidden;
-  }
-  .profile-header {
-    background: linear-gradient(135deg, #e94560 0%, #c62a40 100%);
-    color: white;
-    padding: 30px 35px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-  .profile-logo {
-    width: 70px;
-    height: 70px;
-    background: white;
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: #e94560;
-    flex-shrink: 0;
-  }
-  .profile-header h2 { font-size: 1.6rem; font-weight: 700; }
-  .profile-header p { opacity: 0.9; font-size: 0.95rem; }
-
-  .profile-body {
-    padding: 30px 35px;
-  }
-  .info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
-    margin-bottom: 25px;
-  }
-  .info-item {
-    background: #f8f9fb;
-    border-radius: 10px;
-    padding: 18px;
-  }
-  .info-item .label {
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #888;
-    margin-bottom: 6px;
-  }
-  .info-item .value {
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: #1a1a2e;
-  }
-
-  .services-list, .cities-list, .selling-points {
-    margin-bottom: 25px;
-  }
-  .section-label {
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
-    color: #e94560;
-    margin-bottom: 12px;
-  }
-  .tag-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .tag {
-    background: #fef0f3;
-    color: #c62a40;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 0.82rem;
-    font-weight: 500;
-    border: 1px solid #f5d0d7;
-  }
-  .tag.city {
-    background: #eef4ff;
-    color: #2563eb;
-    border-color: #c7dbff;
-  }
-  .tag.point {
-    background: #f0fdf4;
-    color: #16a34a;
-    border-color: #bbf7d0;
-  }
-
-  /* ---- SECTION TITLES ---- */
-  .section-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin: 45px 0 25px;
-    color: #1a1a2e;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .section-title .icon {
-    width: 36px;
-    height: 36px;
-    background: #e94560;
-    color: white;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-  }
-
-  /* ---- COMPETITOR CARDS ---- */
-  .competitor-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-    gap: 24px;
-    margin-bottom: 40px;
-  }
-  .competitor-card {
-    background: white;
-    border-radius: 14px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
-    overflow: hidden;
-    transition: transform 0.2s;
-  }
-  .competitor-card:hover { transform: translateY(-3px); }
-  .comp-header {
-    padding: 24px 28px 18px;
-    border-bottom: 1px solid #f0f0f0;
-  }
-  .comp-header h3 {
-    font-size: 1.2rem;
-    font-weight: 700;
-    margin-bottom: 4px;
-  }
-  .comp-header .comp-location {
-    font-size: 0.85rem;
-    color: #888;
-  }
-  .comp-body { padding: 20px 28px 28px; }
-  .comp-section { margin-bottom: 18px; }
-  .comp-section:last-child { margin-bottom: 0; }
-  .comp-section-label {
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #6b7280;
-    margin-bottom: 8px;
-  }
-  .comp-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-  .comp-tag {
-    padding: 4px 10px;
-    border-radius: 14px;
-    font-size: 0.78rem;
-    font-weight: 500;
-    background: #f3f4f6;
-    color: #374151;
-  }
-  .comp-tag.strength {
-    background: #dbeafe;
-    color: #1e40af;
-  }
-  .comp-tag.trust {
-    background: #fef3c7;
-    color: #92400e;
-  }
-  .comp-tag.location {
-    background: #e0e7ff;
-    color: #3730a3;
-  }
-
-  /* ---- COMPARISON TABLE ---- */
-  .table-wrapper {
-    overflow-x: auto;
-    margin-bottom: 40px;
-    border-radius: 14px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    font-size: 0.88rem;
-  }
-  thead th {
-    background: #1a1a2e;
-    color: white;
-    padding: 16px 18px;
-    text-align: left;
-    font-weight: 600;
-    font-size: 0.82rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    position: sticky;
-    top: 0;
-  }
-  thead th:first-child {
-    border-radius: 14px 0 0 0;
-  }
-  thead th:last-child {
-    border-radius: 0 14px 0 0;
-  }
-  thead th.you {
-    background: #e94560;
-  }
-  tbody td {
-    padding: 14px 18px;
-    border-bottom: 1px solid #f0f0f0;
-    vertical-align: top;
-  }
-  tbody tr:last-child td { border-bottom: none; }
-  tbody tr:hover { background: #fafbfc; }
-  tbody td:first-child {
-    font-weight: 600;
-    color: #6b7280;
-    white-space: nowrap;
-    background: #fafbfc;
-  }
-  td.highlight {
-    background: #fef7f8 !important;
-    font-weight: 500;
-  }
-  .check { color: #16a34a; font-weight: 700; }
-  .cross { color: #dc2626; }
-  .partial { color: #f59e0b; }
-
-  /* ---- SWOT / INSIGHTS ---- */
-  .insights-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 20px;
-    margin-bottom: 40px;
-  }
-  .insight-card {
-    background: white;
-    border-radius: 14px;
-    padding: 24px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
-  }
-  .insight-card h4 {
-    font-size: 0.9rem;
-    font-weight: 700;
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .insight-card ul {
-    list-style: none;
-    padding: 0;
-  }
-  .insight-card li {
-    padding: 6px 0;
-    font-size: 0.88rem;
-    border-bottom: 1px solid #f5f5f5;
-    padding-left: 18px;
-    position: relative;
-  }
-  .insight-card li:last-child { border-bottom: none; }
-  .insight-card li::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 14px;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-  }
-  .strengths li::before { background: #16a34a; }
-  .weaknesses li::before { background: #dc2626; }
-  .opportunities li::before { background: #2563eb; }
-  .threats li::before { background: #f59e0b; }
-
-  .footer {
-    text-align: center;
-    padding: 30px;
-    font-size: 0.8rem;
-    color: #9ca3af;
-    border-top: 1px solid #e5e7eb;
-    margin-top: 20px;
-  }
-
-  @media (max-width: 768px) {
-    .hero {
-      padding: 48px 20px 40px;
-    }
-    .hero h1 {
-      font-size: 2rem;
-    }
-    .container,
-    .nav-wrap {
-      padding: 0 16px;
-    }
-    .profile-header,
-    .profile-body {
-      padding: 22px 20px;
-    }
-    .profile-header {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    .section-title {
-      font-size: 1.25rem;
-    }
-  }
+.card p {
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
 </style>
 </head>
+
 <body>
 
-<!-- HERO -->
 <div class="hero">
-  <h1>Competitive Analysis Report</h1>
-  <p class="subtitle">Fast Hippo Media vs. Local DFW Competitors</p>
-  <p class="date">Prepared March 17, 2026</p>
+  <h1>GBP Growth Strategy Dashboard</h1>
+  <p>Fast Hippo Media Client Analysis</p>
 </div>
 
-<!-- NAVIGATION -->
-<div class="nav-wrap">
-  <div class="nav-card">
-    <h3>Report Navigation</h3>
-    <div class="nav-links">
-      <a class="nav-rank" href="ranking-levers-analysis.html">Ranking Levers</a>
-      <a class="nav-products" href="gbp-products-spec.html">GBP Products</a>
-      <a class="nav-posting" href="gbp-posting-plan.html">Posting Plan</a>
-      <a class="nav-patterns" href="competitor-gbp-patterns.html">Competitor Patterns</a>
-      <a class="nav-outliers" href="ranking-outliers-observations.html">Ranking Outliers</a>
-      <a class="nav-reviews" href="review-framework.html">Review Framework</a>
-      <a class="nav-photo" href="gbp-photo-plan.html">Photo Plan</a>
-    </div>
-  </div>
-</div>
+<div class="grid">
 
-<div class="container">
+<a class="card" href="competitive-analysis.html">
+  <h3>📊 Competitive Analysis</h3>
+  <p>Client vs competitors breakdown</p>
+</a>
 
-<!-- ===== YOUR BUSINESS PROFILE ===== -->
-<div class="profile-section">
-  <div class="profile-card">
-    <div class="profile-header">
-      <div class="profile-logo">FH</div>
-      <div>
-        <h2>Fast Hippo Media</h2>
-        <p>Award-Winning Digital Marketing Agency</p>
-      </div>
-    </div>
-    <div class="profile-body">
-      <div class="info-grid">
-        <div class="info-item">
-          <div class="label">Frisco Address</div>
-          <div class="value">7700 Preston Rd, Ste. 401, Frisco, TX 75034</div>
-        </div>
-        <div class="info-item">
-          <div class="label">Phone</div>
-          <div class="value">(469) 677-7725</div>
-        </div>
-        <div class="info-item">
-          <div class="label">Google Rating</div>
-          <div class="value">4.7 / 5 (15 Google reviews)</div>
-        </div>
-        <div class="info-item">
-          <div class="label">Overall Client Rating</div>
-          <div class="value">4.9 / 5 (200+ clients)</div>
-        </div>
-        <div class="info-item">
-          <div class="label">Office Locations</div>
-          <div class="value">Frisco TX, Dallas TX, Colorado Springs CO</div>
-        </div>
-        <div class="info-item">
-          <div class="label">2025 Growth</div>
-          <div class="value">300%+ year-over-year</div>
-        </div>
-      </div>
+<a class="card" href="ranking-levers-analysis.html">
+  <h3>🚀 Ranking Levers</h3>
+  <p>What Google rewards most</p>
+</a>
 
-      <div class="services-list">
-        <div class="section-label">Services</div>
-        <div class="tag-container">
-          <span class="tag">AI-Enhanced Digital Marketing</span>
-          <span class="tag">Answer Engine Optimization (AEO)</span>
-          <span class="tag">Content Everywhere (Proprietary)</span>
-          <span class="tag">SEO / Organic SEO</span>
-          <span class="tag">Google Business Profile Optimization</span>
-          <span class="tag">Web Design & Development</span>
-          <span class="tag">PPC / SEM</span>
-          <span class="tag">Social Media Marketing</span>
-          <span class="tag">Content Marketing</span>
-          <span class="tag">Small Business Marketing</span>
-          <span class="tag">Paid Advertising</span>
-          <span class="tag">Strategic Consultation</span>
-        </div>
-      </div>
+<a class="card" href="gbp-products-spec.html">
+  <h3>🛍 GBP Products</h3>
+  <p>Exact setup instructions</p>
+</a>
 
-      <div class="cities-list">
-        <div class="section-label">Cities / Areas Served</div>
-        <div class="tag-container">
-          <span class="tag city">Frisco, TX</span>
-          <span class="tag city">Dallas, TX</span>
-          <span class="tag city">Colorado Springs, CO</span>
-          <span class="tag city">Nationwide (USA)</span>
-        </div>
-      </div>
+<a class="card" href="gbp-posting-plan.html">
+  <h3>📅 Posting Plan</h3>
+  <p>Content strategy for GBP</p>
+</a>
 
-      <div class="selling-points">
-        <div class="section-label">Key Selling Points</div>
-        <div class="tag-container">
-          <span class="tag point">Proprietary "Content Everywhere" Framework</span>
-          <span class="tag point">AI + 60 Years Combined Experience</span>
-          <span class="tag point">300%+ YoY Growth (2025)</span>
-          <span class="tag point">4.9/5 Rating from 200+ Clients</span>
-          <span class="tag point">3 Office Locations</span>
-          <span class="tag point">Pioneer in AEO (Answer Engine Optimization)</span>
-          <span class="tag point">Omnichannel Search Strategy</span>
-          <span class="tag point">Old-School Client Service + Cutting-Edge Tech</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<a class="card" href="competitor-gbp-patterns.html">
+  <h3>📌 Competitor Patterns</h3>
+  <p>Shared ranking signals</p>
+</a>
 
-<!-- ===== COMPETITOR PROFILES ===== -->
-<div class="section-title">
-  <div class="icon">&#9878;</div>
-  Competitor Profiles
-</div>
+<a class="card" href="ranking-outliers-observations.html">
+  <h3>⚡ Ranking Outliers</h3>
+  <p>Unexpected ranking behavior</p>
+</a>
 
-<div class="competitor-grid">
+<a class="card" href="review-framework.html">
+  <h3>⭐ Review Framework</h3>
+  <p>How to scale reviews</p>
+</a>
 
-  <!-- SEOTA -->
-  <div class="competitor-card">
-    <div class="comp-header">
-      <h3>Seota Digital Marketing</h3>
-      <div class="comp-location">2591 Dallas Pkwy, Ste 300, Frisco TX | Also: Troy MI, Phoenix AZ</div>
-    </div>
-    <div class="comp-body">
-      <div class="comp-section">
-        <div class="comp-section-label">Services</div>
-        <div class="comp-tags">
-          <span class="comp-tag">WordPress Design</span>
-          <span class="comp-tag">WordPress Development</span>
-          <span class="comp-tag">SEO</span>
-          <span class="comp-tag">PPC / AdWords</span>
-          <span class="comp-tag">Social Media</span>
-          <span class="comp-tag">Local SEO</span>
-          <span class="comp-tag">eCommerce</span>
-          <span class="comp-tag">Marketing Automation</span>
-          <span class="comp-tag">Multi-Location SEO</span>
-        </div>
-      </div>
-      <div class="comp-section">
-        <div class="comp-section-label">Strengths</div>
-        <div class="comp-tags">
-          <span class="comp-tag strength">In Frisco since 2009 (17 yrs)</span>
-          <span class="comp-tag strength">WordPress specialist</span>
-          <span class="comp-tag strength">Multi-location SEO focus</span>
-          <span class="comp-tag strength">Avg client tenure: 6 years</span>
-        </div>
-      </div>
-      <div class="comp-section">
-        <div class="comp-section-label">Trust Signals</div>
-        <div class="comp-tags">
-          <span class="comp-tag trust">4x UpCity National Excellence Award</span>
-          <span class="comp-tag trust">5.0 on Clutch</span>
-          <span class="comp-tag trust">Perfect BBB rating</span>
-          <span class="comp-tag trust">200+ satisfied clients</span>
-        </div>
-      </div>
-    </div>
-  </div>
+<a class="card" href="gbp-photo-plan.html">
+  <h3>📸 Photo Plan</h3>
+  <p>Visual content strategy</p>
+</a>
 
-  <!-- KINETIC CURVE -->
-  <div class="competitor-card">
-    <div class="comp-header">
-      <h3>Kinetic Curve Marketing Agency</h3>
-      <div class="comp-location">291 S Preston Rd, Ste 440, Prosper TX</div>
-    </div>
-    <div class="comp-body">
-      <div class="comp-section">
-        <div class="comp-section-label">Services</div>
-        <div class="comp-tags">
-          <span class="comp-tag">AI Reputation Management</span>
-          <span class="comp-tag">Review Management</span>
-          <span class="comp-tag">Branding & Web Design</span>
-          <span class="comp-tag">Directory Building</span>
-          <span class="comp-tag">CRM Software</span>
-          <span class="comp-tag">Virtual Office Services</span>
-        </div>
-      </div>
-      <div class="comp-section">
-        <div class="comp-section-label">Target Locations</div>
-        <div class="comp-tags">
-          <span class="comp-tag location">Dallas</span>
-          <span class="comp-tag location">Austin</span>
-          <span class="comp-tag location">Houston</span>
-          <span class="comp-tag location">San Antonio</span>
-          <span class="comp-tag location">All Texas</span>
-        </div>
-      </div>
-      <div class="comp-section">
-        <div class="comp-section-label">Strengths</div>
-        <div class="comp-tags">
-          <span class="comp-tag strength">Niche: reputation/reviews</span>
-          <span class="comp-tag strength">AI-driven CRM included</span>
-          <span class="comp-tag strength">Med Spa specialization</span>
-          <span class="comp-tag strength">KLT (Know, Like, Trust) framework</span>
-        </div>
-      </div>
-      <div class="comp-section">
-        <div class="comp-section-label">Trust Signals</div>
-        <div class="comp-tags">
-          <span class="comp-tag trust">49 reviews on directories</span>
-          <span class="comp-tag trust">Prosper TX local presence</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- OSKY BLUE -->
-  <div class="competitor-card">
-    <div class="comp-header">
-      <h3>Osky Blue</h3>
-      <div class="comp-location">3001 Dallas Pkwy, Ste 120A, Frisco TX 75034</div>
-    </div>
-    <div class="comp-body">
-      <div class="comp-section">
-        <div class="comp-section-label">Services</div>
-        <div class="comp-tags">
-          <span class="comp-tag">Website Design & Dev</span>
-          <span class="comp-tag">SEO</span>
-          <span class="comp-tag">Social Media Advertising</span>
-          <span class="comp-tag">PPC</span>
-          <span class="comp-tag">Reputation Management</span>
-          <span class="comp-tag">Email Marketing</span>
-          <span class="comp-tag">Content Marketing</span>
-          <span class="comp-tag">eCommerce</span>
-        </div>
-      </div>
-      <div class="comp-section">
-        <div class="comp-section-label">Strengths</div>
-        <div class="comp-tags">
-          <span class="comp-tag strength">14 years in business (since 2010)</span>
-          <span class="comp-tag strength">500+ custom websites built</span>
-          <span class="comp-tag strength">Small-business focused</span>
-          <span class="comp-tag strength">Industry verticals (finance, healthcare, retail)</span>
-        </div>
-      </div>
-      <div class="comp-section">
-        <div class="comp-section-label">Trust Signals</div>
-        <div class="comp-tags">
-          <span class="comp-tag trust">BBB A+ rating (since 2020)</span>
-          <span class="comp-tag trust">4x Small Business of Year Nominee</span>
-          <span class="comp-tag trust">500+ websites</span>
-          <span class="comp-tag trust">Locally owned</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== HEAD-TO-HEAD COMPARISON TABLE ===== -->
-<div class="section-title">
-  <div class="icon">&#9878;</div>
-  Head-to-Head Comparison
-</div>
-
-<div class="table-wrapper">
-<table>
-  <thead>
-    <tr>
-      <th>Dimension</th>
-      <th class="you">Fast Hippo Media</th>
-      <th>Seota</th>
-      <th>Kinetic Curve</th>
-      <th>Osky Blue</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>HQ Location</td>
-      <td class="highlight">Frisco TX (+ Dallas, CO Springs)</td>
-      <td>Frisco TX (+ Troy MI, Phoenix AZ)</td>
-      <td>Prosper TX</td>
-      <td>Frisco TX</td>
-    </tr>
-    <tr>
-      <td>Years Active</td>
-      <td class="highlight">Newer entrant, rapid growth</td>
-      <td>Since 2009 (~17 yrs)</td>
-      <td>Newer / undisclosed</td>
-      <td>Since 2010 (~16 yrs)</td>
-    </tr>
-    <tr>
-      <td>Growth Trajectory</td>
-      <td class="highlight"><span class="check">&#10003;</span> 300%+ YoY (2025)</td>
-      <td>Steady / established</td>
-      <td>Undisclosed</td>
-      <td>Steady / established</td>
-    </tr>
-    <tr>
-      <td>AI / Innovation</td>
-      <td class="highlight"><span class="check">&#10003;</span> AI-first, AEO pioneer, Content Everywhere</td>
-      <td><span class="partial">~</span> Traditional SEO focus</td>
-      <td><span class="check">&#10003;</span> AI reputation mgmt</td>
-      <td><span class="cross">&#10007;</span> Traditional approach</td>
-    </tr>
-    <tr>
-      <td>Proprietary Tech</td>
-      <td class="highlight"><span class="check">&#10003;</span> Content Everywhere platform</td>
-      <td><span class="cross">&#10007;</span> Standard tools</td>
-      <td><span class="partial">~</span> AI CRM software</td>
-      <td><span class="cross">&#10007;</span> Standard tools</td>
-    </tr>
-    <tr>
-      <td>SEO Services</td>
-      <td class="highlight"><span class="check">&#10003;</span> SEO + AEO + GBP + Local</td>
-      <td><span class="check">&#10003;</span> SEO + Local + Multi-location</td>
-      <td><span class="partial">~</span> Directory building only</td>
-      <td><span class="check">&#10003;</span> SEO</td>
-    </tr>
-    <tr>
-      <td>Web Design</td>
-      <td class="highlight"><span class="check">&#10003;</span> Conversion-focused</td>
-      <td><span class="check">&#10003;</span> WordPress specialist</td>
-      <td><span class="check">&#10003;</span> Branding + web</td>
-      <td><span class="check">&#10003;</span> 500+ sites built</td>
-    </tr>
-    <tr>
-      <td>PPC / Paid Ads</td>
-      <td class="highlight"><span class="check">&#10003;</span> PPC + SEM</td>
-      <td><span class="check">&#10003;</span> AdWords + paid social</td>
-      <td><span class="cross">&#10007;</span> Not a focus</td>
-      <td><span class="check">&#10003;</span> PPC + social ads</td>
-    </tr>
-    <tr>
-      <td>Social Media</td>
-      <td class="highlight"><span class="check">&#10003;</span> Full management</td>
-      <td><span class="check">&#10003;</span></td>
-      <td><span class="cross">&#10007;</span> Not a focus</td>
-      <td><span class="check">&#10003;</span> Advertising focus</td>
-    </tr>
-    <tr>
-      <td>Reputation Mgmt</td>
-      <td class="highlight"><span class="partial">~</span> Via GBP optimization</td>
-      <td><span class="partial">~</span> Online advocates</td>
-      <td><span class="check">&#10003;</span> Core specialty</td>
-      <td><span class="check">&#10003;</span></td>
-    </tr>
-    <tr>
-      <td>Content Marketing</td>
-      <td class="highlight"><span class="check">&#10003;</span> Omnichannel (Content Everywhere)</td>
-      <td><span class="partial">~</span> Basic</td>
-      <td><span class="partial">~</span> Authoritative content</td>
-      <td><span class="check">&#10003;</span> Email + newsletters</td>
-    </tr>
-    <tr>
-      <td>Answer Engine Opt.</td>
-      <td class="highlight"><span class="check">&#10003;</span> Industry leader</td>
-      <td><span class="cross">&#10007;</span></td>
-      <td><span class="cross">&#10007;</span></td>
-      <td><span class="cross">&#10007;</span></td>
-    </tr>
-    <tr>
-      <td>Google Review Rating</td>
-      <td class="highlight">4.7 / 5 (15 reviews)</td>
-      <td>~5.0 (UpCity / Clutch)</td>
-      <td>~49 reviews (directories)</td>
-      <td>BBB A+</td>
-    </tr>
-    <tr>
-      <td>Client Satisfaction</td>
-      <td class="highlight">4.9/5 (200+ clients)</td>
-      <td>200+ clients, avg 6-yr tenure</td>
-      <td>Positive testimonials</td>
-      <td>4x Sm. Biz of Year Nominee</td>
-    </tr>
-    <tr>
-      <td>Service Reach</td>
-      <td class="highlight">Nationwide (USA)</td>
-      <td>Frisco + national</td>
-      <td>Texas statewide</td>
-      <td>Frisco / DFW focus</td>
-    </tr>
-    <tr>
-      <td>Niche / Vertical</td>
-      <td class="highlight">Broad + niche (e.g., golf cart dealers)</td>
-      <td>Multi-location businesses</td>
-      <td>Med spas, restaurants, real estate</td>
-      <td>Finance, healthcare, retail SMBs</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-<!-- ===== STRATEGIC INSIGHTS (SWOT-style) ===== -->
-<div class="section-title">
-  <div class="icon">&#9733;</div>
-  Strategic Insights for Fast Hippo Media
-</div>
-
-<div class="insights-grid">
-  <div class="insight-card strengths">
-    <h4><span style="color:#16a34a; font-size:1.2rem;">&#9650;</span> Your Competitive Advantages</h4>
-    <ul>
-      <li><strong>Only agency offering AEO</strong> &mdash; none of the three competitors mention Answer Engine Optimization, giving you a clear blue-ocean differentiator</li>
-      <li><strong>Proprietary technology</strong> &mdash; Content Everywhere is a unique, branded framework; competitors rely on off-the-shelf tools</li>
-      <li><strong>AI-first positioning</strong> &mdash; your brand is built around AI innovation, while Seota and Osky Blue lean traditional</li>
-      <li><strong>Explosive growth story</strong> &mdash; 300%+ YoY growth is a powerful proof point that no competitor can match</li>
-      <li><strong>National reach with local roots</strong> &mdash; three offices vs. competitors' single or limited locations</li>
-      <li><strong>Omnichannel content strategy</strong> &mdash; covering Google, AI answers, social, video, and voice in one framework</li>
-    </ul>
-  </div>
-
-  <div class="insight-card weaknesses">
-    <h4><span style="color:#dc2626; font-size:1.2rem;">&#9660;</span> Areas to Watch</h4>
-    <ul>
-      <li><strong>Google review volume</strong> &mdash; only 15 Google reviews vs. competitors with stronger review profiles; Seota has a perfect Clutch score and 4 national awards</li>
-      <li><strong>Tenure perception</strong> &mdash; Seota (17 yrs) and Osky Blue (16 yrs) may win "established agency" trust over newer entrants</li>
-      <li><strong>Reputation management gap</strong> &mdash; Kinetic Curve owns this niche entirely; consider packaging this more prominently</li>
-      <li><strong>WordPress specialization</strong> &mdash; Seota is strongly branded around WordPress; if prospects need WP-specific work, they may default to Seota</li>
-    </ul>
-  </div>
-
-  <div class="insight-card opportunities">
-    <h4><span style="color:#2563eb; font-size:1.2rem;">&#9654;</span> Opportunities</h4>
-    <ul>
-      <li><strong>Grow Google reviews aggressively</strong> &mdash; with 200+ happy clients, a review campaign could quickly dwarf competitors</li>
-      <li><strong>Own the "AI marketing" narrative</strong> &mdash; only Kinetic Curve mentions AI, and only for reputation; you can own AI across all services</li>
-      <li><strong>Target Kinetic Curve's verticals</strong> &mdash; med spas and healthcare are high-value and you already serve small businesses</li>
-      <li><strong>Leverage Content Everywhere as thought leadership</strong> &mdash; publish case studies, webinars, and PR to build the moat</li>
-      <li><strong>Multi-location SEO</strong> &mdash; Seota targets this; with three offices you have credibility to compete here</li>
-    </ul>
-  </div>
-
-  <div class="insight-card threats">
-    <h4><span style="color:#f59e0b; font-size:1.2rem;">&#9670;</span> Competitive Threats</h4>
-    <ul>
-      <li><strong>Seota's entrenchment</strong> &mdash; 17 years in Frisco, perfect ratings, and 4 national awards make them the incumbent to beat locally</li>
-      <li><strong>Osky Blue's SMB loyalty</strong> &mdash; 500+ websites and BBB A+ rating create strong trust with Frisco small businesses</li>
-      <li><strong>Kinetic Curve's niche lock</strong> &mdash; if a business needs reputation management first, Kinetic Curve is positioned to capture them before you</li>
-      <li><strong>Competitor adoption of AI</strong> &mdash; as AI marketing becomes mainstream, current differentiators may narrow</li>
-    </ul>
-  </div>
-</div>
-
-</div>
-
-<div class="footer">
-  Competitive Analysis Report &mdash; Prepared for Fast Hippo Media &mdash; March 17, 2026<br>
-  Data sourced from public websites, Google Business Profiles, and business directories.
 </div>
 
 </body>
